@@ -1,0 +1,8 @@
+#!/bin/bash
+
+ruby core/preprocessor.rb "$1"
+ruby "release/$1" "$1"
+
+# ToDo: check exit status
+# ToDo: automatic detect MCU type
+avr-gcc -c "release/$1.c" -std=c99 -o "release/$1.o" -mmcu=attiny13

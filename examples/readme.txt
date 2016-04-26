@@ -1,0 +1,2 @@
+To compile replace this examples in root directory of RubimC. Then you must run 'rubim-compile' script to generate clear C-code, and 'rubim-compiler-avr' to generate code for AVR microcontrollers.
+Generated C-code and binary files will placed in folder "release"

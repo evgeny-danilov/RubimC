@@ -1,0 +1,8 @@
+#!/bin/bash
+
+ruby core/preprocessor.rb "$1"
+ruby "release/$1" "$1"
+
+# ToDo: check exit status
+gcc -o "release/$1.out" "release/$1.c" -std=c99 
+./"release/$1.out"
