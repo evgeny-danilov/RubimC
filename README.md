@@ -1,12 +1,13 @@
-## TODO before push on GitHub
-1. login in GitHub
+## TODO next week
+1. examples - add all realized features 
 2. push on GitHub
+RubimC is a Ruby compiler and framework for microcontrollers like AVR, PIC & STM. It was designed to simplify the process of programming microcontrollers, but can also be used as an clear С-code generator that can be compiled with gcc.
 
 ## RubimC
-**RubimC** is a Ruby compiler and generator of C-code. Full name RubimCode in Russian transcription heard as "cut down the code". Current version is working but realizes far not all the features of Ruby. All realized features you can find in folder "examples"
+**RubimC** is a Ruby compiler and framework for microcontrollers. Full name RubimCode in Russian transcription heard as "cut down the code". Current version is working but realizes far not all the features of Ruby. All realized features you can find in folder "examples"
 
 ## Description:
-**RubimC** designed to simplify the process of programming microcontrollers, but can also be used as an clear С-code generator. The generator is a syntax-flavored **Ruby** combines the unique features of the **Ruby**, adding and expanding the functions required for a specific area. At the input  generator takes the program to **Ruby**, and the output provides a pure C code, based on the user program and libraries that are connected to a select model of the microcontroller. All that is required to generate is installed ruby-interpreter. If it`s nessesary, for compile C-code you need installing compiler *gcc* or *avr-gcc* (for AVR microcontrollers)
+**RubimC** designed to simplify the process of programming microcontrollers, but can also be used as an clear С-code generator. The framework is a syntax-flavored **Ruby** combines the unique features of the **Ruby**, adding and expanding the functions required for a specific area. At the input  generator takes the program to **Ruby**, and the output provides a pure C code, based on the user program and libraries that are connected to a select model of the microcontroller. All that is required to generate is installed ruby-interpreter. If it`s nessesary, for compile C-code you need installing compiler *gcc* or *avr-gcc* (for AVR microcontrollers)
 
 ## Benefits of writing programs in RubymC 
     - increase development speed; 
@@ -138,7 +139,8 @@ There is interesting idea for connect few microconrollers (IC) via some firmware
 ```ruby
 class BrainController < AVR_atmega16
     def initialize()
-        input :button, port: :A, pin: 6 # its a syntax surag of "@button = input name: 'button', port: 'A', pin: 6"
+        input :button, port: :A, pin: 6 
+        # its a syntax surag of "@button = input name: 'button', port: 'A', pin: 6"
     end
 
     def main_loop() # infinit loop, it stop only when IC is reset
