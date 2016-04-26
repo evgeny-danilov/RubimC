@@ -1,8 +1,3 @@
-## TODO next week
-1. examples - add all realized features 
-2. push on GitHub
-RubimC is a Ruby compiler and framework for microcontrollers like AVR, PIC & STM. It was designed to simplify the process of programming microcontrollers, but can also be used as an clear С-code generator that can be compiled with gcc.
-
 ## RubimC
 **RubimC** is a Ruby compiler and framework for microcontrollers. Full name RubimCode in Russian transcription heard as "cut down the code". Current version is working but realizes far not all the features of Ruby. All realized features you can find in folder "examples"
 
