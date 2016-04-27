@@ -1,8 +1,23 @@
 #!/bin/bash
 
-ruby core/preprocessor.rb "$1"
-ruby "release/$1" "$1"
+# === preprocessing user program ===
+ruby -e "require 'rubimc/preprocessor'" "$1" # $1 - compiled Ruby-file
 
+# === extract filename without path and extention ===
+FILENAME=$(basename "$1")
+FILENAME="${FILENAME%.*}"
+
+# === jump to 'release' folder ===
+DIR=$(dirname "$1")
+cd "${DIR}/release/"
+
+# === generate C-code ===
+ruby "${FILENAME}.rb" "${FILENAME}"
 # ToDo: check exit status
-gcc -o "release/$1.out" "release/$1.c" -std=c99 
-./"release/$1.out"
+
+# === compile C-code ===
+gcc -o "${FILENAME}.out" "${FILENAME}.c" -std=c99 
+
+# === execute user program ===
+./"${FILENAME}.out"
+
