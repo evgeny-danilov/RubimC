@@ -21,38 +21,15 @@ Code generated in three stage:
 2. Shell Ruby-code and generate C-code (use metaprograming of Ruby)
 3. Compile C-code (with gcc or avr-gcc).
 
-### Install (Ubuntu)
+### Install
 All you need to use **RubimC** is Ruby interpretator and gcc/avr-gcc compiler. 
 
-The first step is to install some dependencies for Ruby.
-```sh
-sudo apt-get update
-sudo apt-get install git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties libffi-dev
-```
+How to [install Ruby] (https://www.ruby-lang.org/en/documentation/installation/). For Ubuntu I recomended to use this [manual] (https://gorails.com/setup/ubuntu/16.04).
 
-Then install Ruby with *rbenv*
-```sh
-cd
-git clone https://github.com/rbenv/rbenv.git ~/.rbenv
-echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
-echo 'eval "$(rbenv init -)"' >> ~/.bashrc
-exec $SHELL
+Compiler *gcc* provided by Linux. For others platforms use this [manual] (https://gcc.gnu.org/install/binaries.html).
 
-git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
-echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
-exec $SHELL
+To install *avr-gcc* user this [manual] (http://avr-eclipse.sourceforge.net/wiki/index.php/The_AVR_GCC_Toolchain).
 
-git clone https://github.com/rbenv/rbenv-gem-rehash.git ~/.rbenv/plugins/rbenv-gem-rehash
-
-rbenv install 2.3.0
-rbenv global 2.3.0
-ruby -v
-```
-
-Compiler *gcc* provided by Ubuntu. To install *avr-gcc*:
-```sh
-sudo apt-get install avr-gcc avr-binutils avr-libc avrdude 
-```
 
 ### ToDo list (main of them):
 1. Release project as ruby-gem
