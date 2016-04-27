@@ -17,10 +17,10 @@ RSpec.describe TinyController do
 		expect($outstr).to eq("DDRB |= 1<<(3);")
 
 		input_set("output :led, port: :F, pin: 0")
-		expect($outstr).to eq("") 
+		expect($outstr).to eq("Custom Error") 
 
 		input_set("output :led, port: :B, pin: 30")
-		expect($outstr).to eq("") 
+		expect($outstr).to eq("Custom Error") 
 	end
 end
 

@@ -1,27 +1,27 @@
-## RubimC
-**RubimC** is a Ruby compiler and framework for microcontrollers. Full name RubimCode in Russian transcription heard as "cut down the code". Current version is working but realizes far not all the features of Ruby. All realized features you can find in folder "examples"
+### RubimC
+It is a Ruby compiler and framework for microcontrollers. Full name RubimCode in Russian transcription heard as "cut down the code". Current version is working but realizes far not all the features of Ruby. All realized features you can find in folder "examples"
 
-## Description:
-**RubimC** designed to simplify the process of programming microcontrollers, but can also be used as an clear С-code generator. The framework is a syntax-flavored **Ruby** combines the unique features of the **Ruby**, adding and expanding the functions required for a specific area. At the input  generator takes the program to **Ruby**, and the output provides a pure C code, based on the user program and libraries that are connected to a select model of the microcontroller. All that is required to generate is installed ruby-interpreter. If it`s nessesary, for compile C-code you need installing compiler *gcc* or *avr-gcc* (for AVR microcontrollers)
+### Description:
+RubimC designed to simplify the process of programming microcontrollers, but can also be used as an clear С-code generator. The framework is a syntax-flavored Ruby combines the unique features of the Ruby, adding and expanding the functions required for a specific area. At the input  generator takes the program to Ruby, and the output provides a pure C code, based on the user program and libraries that are connected to a select model of the microcontroller. All that is required to generate is installed ruby-interpreter. If it`s nessesary, for compile C-code you need installing compiler *gcc* or *avr-gcc* (for AVR microcontrollers)
 
-## Benefits of writing programs in RubymC 
-    - increase development speed; 
-    - code readability and elegance inherent in the Ruby language; 
-    - an object-oriented approach; 
-    - the use of an interpreted language does not reduce the performance of the final program becфuse there is no virtual mashine;
-     - ability of hardware control IC and delivery of messages; 
+### Benefits of writing programs in RubymC 
+    - increase development speed
+    - code readability and elegance inherent in the Ruby language
+    - an object-oriented approach
+    - the use of an interpreted language does not reduce the performance of the final program because there is no virtual mashine
+     - ability of hardware control IC and delivery of messages
      - ability to get a list of the hardware for a particular version of the device, as well as a list of all methods and help them directly from the generator console, on the basis of libraries.
 
-## Why?
+### Why?
 First of all for fan...I want to see at Ruby from other point, not only from famous framework Ruby On Rails. Of course, we have great project [mruby] (http://mruby.org/), that compile Ruby code, realized all common functions of Ruby and standart libraries, and supported by **Matz**. But...mruby generate a big-size code, and, as we know, microcontroller have very small memory. For example, for initialize only one array mruby generate binary file with size 1MB! At the other side RubimC generate code with minimal size, in most cases are not different from the similar size, written on clear C. In addition, RubimC generator is clearness. You always can to see on generated C-code and to evaluate its performance and size.
 
-## How it`s work
+### How it`s work
 Code generated in three stage:
-1. Preprocessing user programm, that replaced some Ruby keywords, operators and identificators;
-2. Shell Ruby-code and generate C-code (use metaprograming of Ruby);
+1. Preprocessing user programm, that replaced some Ruby keywords, operators and identificators
+2. Shell Ruby-code and generate C-code (use metaprograming of Ruby)
 3. Compile C-code (with gcc or avr-gcc).
 
-## Install (Ubuntu)
+### Install (Ubuntu)
 All you need to use **RubimC** is Ruby interpretator and gcc/avr-gcc compiler. 
 
 The first step is to install some dependencies for Ruby.
@@ -54,7 +54,7 @@ Compiler *gcc* provided by Ubuntu. To install *avr-gcc*:
 sudo apt-get install avr-gcc avr-binutils avr-libc avrdude 
 ```
 
-## ToDo list (main of them):
+### ToDo list (main of them):
 1. Release project as ruby-gem
 2. Code generator:
     + validate ruby-program before compile
@@ -66,7 +66,7 @@ sudo apt-get install avr-gcc avr-binutils avr-libc avrdude
 4. Add generators like Rails (for example: rubimc generate avr_controller Brain type:attiny13 receive_buffer:usb)
 5. Fix a lot of possible bugs & features
 
-## Example for AVR microcontroller:
+### Example for AVR microcontroller:
 Ruby programm (*"FirstController.rb"*):
 ```ruby
 require_relative '../core/core.rb'
@@ -128,7 +128,7 @@ ISR(ADC_vect)
 ```
 *note: this is a valid C-code, but in real AVR-controllers it may not work, because avr-libraries are still in development*
 
-## Some interesting idea
+### Some interesting idea
 There is interesting idea for connect few microconrollers (IC) via some firmware interfaces, for example I2C or USB **(at this moment is not realized)**. This example will generate two binary files for each microcontroller. 
 
 ```ruby
@@ -169,7 +169,7 @@ class LeftHandController < AVR_attiny13
 end
 ```
 
-## Help
+### Help
 If you interested the project and find some bugs, you may to write the tests and we try to fix it. Examples of tests is placed in folder *tests*. To run tests use command *"rspec tests/test_all.rb"*.
 
 Thank you!
