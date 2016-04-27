@@ -8,10 +8,8 @@ def printf(str, *args)
 	if args.empty?
 		RubimCode.pout("printf(#{str.dump});")
 	else
-		arg_str = ""
-		args.each {|arg| arg_str += arg.to_s + ","}
-		arg_str.chomp!(',')
-		RubimCode.pout("printf(#{str.dump}, #{arg_str});")
+		args_str = args.join(', ')
+		RubimCode.pout("printf(#{str.dump}, #{args_str});")
 	end
 end
 
