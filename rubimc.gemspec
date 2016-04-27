@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.description = "Ruby compiler and framework for microcontrollers like AVR, PIC & STM. It was designed to simplify the process of programming microcontrollers, but can also be used as an clear С-code generator that can be compiled with gcc"
   s.authors     = ["Evgeny Danilov"]
   s.email       = 'jmelkor@rambler.ru'
-  s.files       = ["README.md", "LICENSE.md", "core", "lib", "tests"]
+  s.files       = ["README.md", "LICENSE.md", "lib"]
   s.homepage    = 'http://rubygems.org/gems/rubimc'
   s.license     = 'MIT'
 
