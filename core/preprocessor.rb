@@ -35,7 +35,7 @@ class Object
 end
 
 require 'ripper'
-class MyRipper
+class RubimRipper
 	# 1. (готово) замена оператора присваивания: "=" на ".c_assign="
     def self.replace_assing_operators(source)
     	lexs = Ripper.lex(source)
@@ -252,7 +252,7 @@ class MyRipper
 	    	return [lcount, source.lines[lcount-1].length]
 	    end
 
-end # class MyRipper
+end # class RubimRipper
 
 class PreProcessor
 	@@programm = ""
@@ -262,26 +262,26 @@ class PreProcessor
 
 	def self.execute(str)
 		@@programm = str
-		@@programm = MyRipper.replace_assing_operators(@@programm)
-		@@programm = MyRipper.replace_all_numeric(@@programm)
+		@@programm = RubimRipper.replace_assing_operators(@@programm)
+		@@programm = RubimRipper.replace_all_numeric(@@programm)
 
 		# Последовательность очень важна - не нарушать!
-		@@programm = MyRipper.replace_then_else_elsif_kw(@@programm)
+		@@programm = RubimRipper.replace_then_else_elsif_kw(@@programm)
 
-		@@programm = MyRipper.replace_modify_express(@@programm, "if")
-		@@programm = MyRipper.replace_modify_express(@@programm, "unless")
-		@@programm = MyRipper.replace_modify_express(@@programm, "while")
-		@@programm = MyRipper.replace_modify_express(@@programm, "until")
+		@@programm = RubimRipper.replace_modify_express(@@programm, "if")
+		@@programm = RubimRipper.replace_modify_express(@@programm, "unless")
+		@@programm = RubimRipper.replace_modify_express(@@programm, "while")
+		@@programm = RubimRipper.replace_modify_express(@@programm, "until")
 
-		@@programm = MyRipper.replace_flat_express(@@programm, "if")
-		@@programm = MyRipper.replace_flat_express(@@programm, "unless")
-		@@programm = MyRipper.replace_flat_express(@@programm, "while")
-		@@programm = MyRipper.replace_flat_express(@@programm, "until")
+		@@programm = RubimRipper.replace_flat_express(@@programm, "if")
+		@@programm = RubimRipper.replace_flat_express(@@programm, "unless")
+		@@programm = RubimRipper.replace_flat_express(@@programm, "while")
+		@@programm = RubimRipper.replace_flat_express(@@programm, "until")
 
-		@@programm = MyRipper.replace_loop(@@programm)
-		@@programm = MyRipper.replace_rubim_tmpif(@@programm)
+		@@programm = RubimRipper.replace_loop(@@programm)
+		@@programm = RubimRipper.replace_rubim_tmpif(@@programm)
 
-		# @@programm = MyRipper.replace_boolean_kw(@@programm)
+		# @@programm = RubimRipper.replace_boolean_kw(@@programm)
 
 
 		# See 
