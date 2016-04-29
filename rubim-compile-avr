@@ -1,8 +1,34 @@
 #!/bin/bash
 
-ruby core/preprocessor.rb "$1"
-ruby "release/$1" "$1"
+# ruby -e "require 'rubimc/preprocessor'" "$1"
+# ruby "release/$1" "$1"
 
+# # ToDo: check exit status
+# # ToDo: automatic detect MCU type
+# avr-gcc -c "release/$1.c" -std=c99 -o "release/$1.o" -mmcu=attiny13
+
+
+
+# === preprocessing user program ===
+ruby -e "require 'rubimc/preprocessor'" "$1" # $1 - compiled Ruby-file
+# ruby 'lib/rubimc/preprocessor.rb' "$1" # for development in local directory
+
+# === extract filename without path and extention ===
+FILENAME=$(basename "$1")
+FILENAME="${FILENAME%.*}"
+
+# === jump to 'release' folder ===
+DIR=$(dirname "$1")
+cd "${DIR}/release/"
+
+# === generate C-code ===
+ruby "${FILENAME}.rb" "${FILENAME}"
 # ToDo: check exit status
-# ToDo: automatic detect MCU type
-avr-gcc -c "release/$1.c" -std=c99 -o "release/$1.o" -mmcu=attiny13
+
+# === compile C-code ===
+# ToDo: add DF_CPU (is it need?)
+# ToDo: auto define mmcu type
+avr-gcc -std=c99 -Os -mmcu=attiny13 -c "${FILENAME}.c"
+
+# === generate hex for upload to MCU ===
+avr-objcopy -O ihex "${FILENAME}.o" "${FILENAME}.hex"

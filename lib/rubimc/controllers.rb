@@ -1,5 +1,3 @@
-require_relative "io_ports"
-
 class Controllers
 	def self.all # list of user`s microcontrolles
 		@@controllers_array

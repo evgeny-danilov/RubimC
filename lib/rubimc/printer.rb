@@ -57,7 +57,7 @@ class << self
 			if (($pout_destination == :default) or ($pout_destination.nil?))
 				puts res_str
 				unless defined? TEST_MODE
-					File.open("release/#{ARGV[0]}.c", 'a+') {|file| file.puts(res_str) }
+					File.open("#{ARGV[0]}.c", 'a+') {|file| file.puts(res_str) }
 				end
 			else
 				$pout_destination.concat(res_str).concat("\n")
