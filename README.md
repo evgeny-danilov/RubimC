@@ -37,7 +37,9 @@ To install *avr-gcc* user this [manual] (http://avr-eclipse.sourceforge.net/wiki
 
 
 ### ToDo list (main of them):
-1. Add Rake-generators (for example: rubimc generate avr_controller Brain type:attiny13 receive_buffer:usb; rubim compile -all)
+1. Add Rake-generators:
+    + rubimc generate controller Brain type:attiny13 receive_buffer:usb
+    + rubimc compile Brain
 2. Code generator:
     + validate ruby-program before compile
     + define user`s variables as local (now it defined in top-level instance)
@@ -68,7 +70,7 @@ class FirstController < AVR_attiny13
 end
 ```
 
-Run *rubim-compile-avr* script in console:
+Download *rubim-compile-avr* from this repository and run script in console:
 ```sh
 ./rubim-compile-avr FirstController.rb
 ```
