@@ -6,6 +6,7 @@
 
 
 /tmp
+/release
 /core/module Test (tmp).rb
 
 RubimCode.doc
