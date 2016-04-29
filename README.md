@@ -22,9 +22,14 @@ Code generated in three stage:
 3. Compile C-code (with gcc or avr-gcc).
 
 ### Install
-All you need to use **RubimC** is Ruby interpretator and gcc/avr-gcc compiler. 
+All you need to use **RubimC** gem is Ruby interpretator and gcc/avr-gcc compiler. 
 
-How to [install Ruby] (https://www.ruby-lang.org/en/documentation/installation/). For Ubuntu I recomended to use this [manual] (https://gorails.com/setup/ubuntu/16.04).
+How to [install Ruby] (https://www.ruby-lang.org/en/documentation/installation/). For Ubuntu I recomended to use first chapter of this [manual] (https://gorails.com/setup/ubuntu/16.04).
+
+Then you can to install RubimC gem:
+```sh
+gem install rubimc
+```
 
 Compiler *gcc* provided by Linux. For others platforms use this [manual] (https://gcc.gnu.org/install/binaries.html).
 

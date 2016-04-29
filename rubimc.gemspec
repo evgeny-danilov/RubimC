@@ -1,6 +1,8 @@
+require_relative 'lib/rubimc.rb'
+
 Gem::Specification.new do |s|
   s.name        = 'rubimc'
-  s.version     = '0.0.0'
+  s.version     = "#{RubimCode::VERSION}"
   s.date        = '2016-04-27'
   s.summary     = "RubimC: Framework for MCU - #{s.version}"
   s.description = "Ruby compiler and framework for microcontrollers like AVR, PIC & STM. It was designed to simplify the process of programming microcontrollers, but can also be used as an clear С-code generator that can be compiled with gcc"

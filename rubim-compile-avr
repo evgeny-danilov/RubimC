@@ -11,6 +11,7 @@
 
 # === preprocessing user program ===
 ruby -e "require 'rubimc/preprocessor'" "$1" # $1 - compiled Ruby-file
+# ruby 'lib/rubimc/preprocessor.rb' "$1" # for development in local directory
 
 # === extract filename without path and extention ===
 FILENAME=$(basename "$1")
@@ -26,7 +27,8 @@ ruby "${FILENAME}.rb" "${FILENAME}"
 
 # === compile C-code ===
 # ToDo: add DF_CPU (is it need?)
-avr-gcc -std=c99 -Os -c "${FILENAME}.c"
+# ToDo: auto define mmcu type
+avr-gcc -std=c99 -Os -mmcu=attiny13 -c "${FILENAME}.c"
 
 # === generate hex for upload to MCU ===
 avr-objcopy -O ihex "${FILENAME}.o" "${FILENAME}.hex"

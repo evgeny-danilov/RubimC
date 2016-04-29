@@ -323,6 +323,7 @@ unless defined? TEST_MODE
 	file_name = input_file.split('/')[-1]
 	file_path = input_file.split('/')[0..-2].join('/')
 	release_path = "#{file_path}/release"
+	release_path[0] = '' if release_path[0] == '/'
 
 	# clear directory "release"
 	Dir.mkdir(release_path) unless Dir.exists?(release_path)
