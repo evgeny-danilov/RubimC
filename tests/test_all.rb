@@ -1,8 +1,8 @@
 require 'rspec'
 
 TEST_MODE = true
-require_relative '../core/core'
-require_relative '../core/preprocessor'
+require 'rubimc'
+require 'rubimc/preprocessor'
 
 require_relative 'helpers'
 require_relative 'test_preprocessor'
