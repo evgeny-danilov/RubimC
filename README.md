@@ -32,7 +32,7 @@ To install *avr-gcc* user this [manual] (http://avr-eclipse.sourceforge.net/wiki
 
 
 ### ToDo list (main of them):
-1. Release project as ruby-gem
+1. Add Rake-generators (for example: rubimc generate avr_controller Brain type:attiny13 receive_buffer:usb; rubim compile -all)
 2. Code generator:
     + validate ruby-program before compile
     + define user`s variables as local (now it defined in top-level instance)
@@ -40,14 +40,12 @@ To install *avr-gcc* user this [manual] (http://avr-eclipse.sourceforge.net/wiki
     + support user`s methods and classes
     + support threads
 3. Write libraries for microcontrollers (AVR, PIC, STM, e.t.)
-4. Add generators like Rails (for example: rubimc generate avr_controller Brain type:attiny13 receive_buffer:usb)
-5. Fix a lot of possible bugs & features
+4. Fix a lot of possible bugs & features
 
 ### Example for AVR microcontroller:
 Ruby programm (*"FirstController.rb"*):
 ```ruby
-require_relative '../core/core.rb'
-require_relative '../lib/avr/attiny13.rb'
+require 'rubimc'
 
 class FirstController < AVR_attiny13
     def initialize
