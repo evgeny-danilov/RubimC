@@ -308,20 +308,30 @@ end
 
 # write preprocessing programm in file
 unless defined? TEST_MODE 
-	unless File.exist?(ARGV[0])
-	 	puts "ERROR: File #{ARGV[0]} not found"
+	input_file = ARGV[0]
+	if input_file.nil?
+	 	puts "ERROR: Input file in params is not defined"
+	 	exit
+	end
+
+	unless File.exist?(input_file)
+	 	puts "ERROR: File #{input_file} not found"
 	 	exit
 	end
 
 	print "start preprocessor..."
+	file_name = input_file.split('/')[-1]
+	file_path = input_file.split('/')[0..-2].join('/')
+	release_path = "#{file_path}/release"
+	release_path[0] = '' if release_path[0] == '/'
 
 	# clear directory "release"
-	Dir.mkdir("release") unless Dir.exists?("release")
-	Dir.foreach("release") do |file| 
-		File.delete("release/#{file}") if (file!='.' && file!='..')
+	Dir.mkdir(release_path) unless Dir.exists?(release_path)
+	Dir.foreach(release_path) do |file| 
+		File.delete("#{release_path}/#{file}") if (file!='.' && file!='..')
 	end
 	
-	pre_file = "release/#{ARGV[0]}"
+	pre_file = "#{release_path}/#{file_name}"
 	PreProcessor.execute( File.read(ARGV[0]) )
 	File.write(pre_file, PreProcessor.programm)
 

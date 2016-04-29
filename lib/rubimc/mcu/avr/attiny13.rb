@@ -2,8 +2,6 @@
 # ATMEL AVR - attiny13												#
 #####################################################################
 
-require_relative '../avr/avr_controller'
-
 class AVR_attiny13 < AVRController
 	class << self
 		def is_real_controller?
@@ -12,6 +10,7 @@ class AVR_attiny13 < AVRController
 
 		def micro_layout 
 			# ToDo: set F_CPU from user programm
+			RubimCode.pout "#define __AVR_ATtiny13__ 1" 
 			RubimCode.pout "#define F_CPU 1000000UL" # Microcontroller frequency (Hz)
 			RubimCode.pout "#include <avr/io.h>"
 			RubimCode.pout "#include <avr/iotn13.h>"

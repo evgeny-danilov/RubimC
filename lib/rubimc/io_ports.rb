@@ -35,7 +35,7 @@ end
 class RubimCode
 	class << self
 		def rubim_sbit(var, bit); "#{var} |= 1<<#{bit};"; end
-		def rubim_cbit(var, bit); "#{var} &= 255 ^ (1<<#{bit});"; end
+		def rubim_cbit(var, bit); "#{var} &= ~(1<<#{bit});"; end
 		def rubim_tbit(var, bit); "#{var} ^= 1<<#{bit};"; end
 	end # class << self
 

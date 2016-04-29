@@ -9,3 +9,6 @@ class AVRController < Controllers
 		end
 	end
 end
+
+# ToDO: add all folder 'avr'
+require 'rubimc/mcu/avr/attiny13'

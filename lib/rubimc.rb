@@ -6,14 +6,18 @@
 #####################################################################
 class RubimCode; end
 
-require_relative "printer"
-require_relative "init_var"
-require_relative "control_structures"
-require_relative "ruby_classes"
-require_relative "controllers"
+require "rubimc/ruby_classes"
+
+require "rubimc/io_ports"
+require "rubimc/controllers"
+require "rubimc/mcu/avr/avr_controller"
+
+require "rubimc/printer"
+require "rubimc/init_var"
+require "rubimc/control_structures"
 
 class RubimCode
-	VERSION = "0.1"
+	VERSION = "0.2.0"
 
 	class UserVariable
 		attr_accessor :name, :type

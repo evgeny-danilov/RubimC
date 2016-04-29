@@ -16,9 +16,9 @@ class FirstController < AVR_attiny13
         ANALOG_TO_DIGITAL.init(ref: "vcc", channel: ADC0)
 
         ANALOG_TO_DIGITAL.interrupt(enabled: true) do |volts|
-            output :led, port: :B, pin: 3
-            led.off if volts < 30
-            led.on if volts >= 220
+            output :led, port: :B, pin:  RubimCode::UserVariable.new(3)
+            led.off if RubimCode.rubim_ifmod volts <  RubimCode::UserVariable.new(30); RubimCode.rubim_end;
+            led.on if RubimCode.rubim_ifmod volts >=  RubimCode::UserVariable.new(220); RubimCode.rubim_end;
         end
     end
 
