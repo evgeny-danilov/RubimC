@@ -14,5 +14,6 @@ code_examples.rb
 untitled.rb
 notes.secret
 
+*.gem
 *~
 *.*~

@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
                       "lib/rubimc/mcu/avr/avr_controller.rb",
                       "lib/rubimc/mcu/avr/attiny13.rb"
                     ]
-  s.homepage    = 'http://rubygems.org/gems/rubimc'
+  s.homepage    = 'https://github.com/jmelkor/RubimC'
   s.license     = 'MIT'
 
 
