@@ -1,4 +1,4 @@
-require_relative 'lib/rubimc.rb'
+require_relative 'lib/version.rb'
 
 Gem::Specification.new do |s|
   s.name        = 'rubimc'
@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.email       = 'jmelkor@rambler.ru'
   s.files       = ["README.md", "LICENSE.md", 
                       "lib/rubimc.rb", 
+                      "lib/version.rb",
                       "lib/rubimc/preprocessor.rb",
                       "lib/rubimc/printer.rb",
                       "lib/rubimc/init_var.rb",
@@ -18,12 +19,14 @@ Gem::Specification.new do |s|
                       "lib/rubimc/ruby_classes.rb",
                       "lib/rubimc/controllers.rb",
                       "lib/rubimc/mcu/avr/avr_controller.rb",
-                      "lib/rubimc/mcu/avr/attiny13.rb"
+                      "lib/rubimc/mcu/avr/attiny13.rb",
+
+                      "bin/rubimc"
                     ]
   s.homepage    = 'https://github.com/jmelkor/RubimC'
   s.license     = 'MIT'
 
 
-  # s.default_executable = %q{rubimc}
-  # s.executables = ["rubimc"]
+  s.default_executable = %q{rubimc}
+  s.executables << "rubimc"
 end

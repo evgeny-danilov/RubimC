@@ -1,0 +1,113 @@
+#!/usr/bin/env ruby
+
+# Example:
+#
+#   rubimc generate controller "BrainControll.rb"
+#   rubimc g controller FirstProg
+# 
+#   rubimc compile "BrainControll.rb"
+#   rubimc compile BrainControll
+#   rubimc compile --all
+# 
+
+require 'rake' 
+
+gem_dir = File.expand_path("..",File.dirname(__FILE__))
+$LOAD_PATH.unshift gem_dir # Look in gem directory for resources first.
+exec_type = ARGV[0]
+
+if exec_type == 'generate' or exec_type == 'g'
+	controller_name = "FirstController"
+	controller_type = "UnknownController"
+	generated_text = "
+require 'rubimc'
+
+class #{controller_name} < #{controller_type}
+	def initialize
+	end
+
+	def main_loop # infinit loop, it stop only when IC is reset
+	end
+end"
+
+	File.open("#{controller_name}.rb", 'a+') {|file| file.puts(generated_text) }
+
+elsif exec_type == 'compile'
+
+	puts "\n === Run RubimC compiler === "
+
+	input_files = []
+	if ARGV[1] == '-all' or ARGV[1] == '--all'
+		Dir['*.rb'].each do |file|
+			input_files << file
+		end
+	else
+		ARGV[1] += '.rb' if File.extname(ARGV[1]).empty?
+		input_files << ARGV[1]
+	end
+	ARGV.clear
+
+	unless input_files.any?
+		puts 'No files to compile...'
+		exit 1
+	end
+
+	need_to_clear_release = true
+	input_files.each do |input_file|
+		# === check file exist ===
+		unless File.exist?(input_file)
+		 	puts "ERROR: File \"#{input_file}\" not found"
+		 	puts "Use 'rubimc compile --all' to compile all files in current directory"
+		 	puts ""
+		 	exit 1
+		end
+
+		# === prepare file names ===
+		input_file = File.expand_path(input_file)
+		basename = File.basename(input_file, ".rb") # extract filename without path and extention 
+		dirname = File.dirname(input_file)
+		outfile = "#{dirname}/release/#{basename}"
+
+		# === clear directory "release" ===
+		Dir.mkdir(outfile) unless Dir.exists?(outfile)
+		if need_to_clear_release
+			need_to_clear_release = false
+			# ToDo: clear directory with FileUtils (from rake)
+
+			# Dir.foreach(outfile) do |file| 
+			# 	File.delete("#{outfile}/#{file}") if (file!='.' && file!='..')
+			# end
+		end
+
+		# === preprocessing user`s program ===
+		print "preprocessing file \"#{basename}.rb\"..."
+		require 'rubimc/preprocessor'
+		PreProcessor.write_in_file(input_file, dirname, basename, "#{outfile}.rb")
+
+		# === execute preprocessing program, generate C code ===
+		puts "generate C code"
+		sh "ruby '#{outfile}.rb' '#{outfile}'.c", verbose: false do |ok, res|
+			exit 1 unless ok # check exit status after command runs
+		end
+
+		# === compile C code to object-code ===
+		# ToDo: add DF_CPU (is it need?)
+		# ToDo: auto define mmcu type
+		print "compile..."
+		sh "avr-gcc -std=c99 -Os -mmcu=attiny13 -c '#{outfile}.c' -o '#{outfile}.o'", verbose: false do |ok, res|
+			exit 1 unless ok # check exit status after command runs
+		end
+		puts "done"
+
+		# === generate hex for upload to MCU ===
+		print "link..."
+		sh "avr-objcopy -O ihex '#{outfile}.o' '#{outfile}.hex'", verbose: false do |ok, res|
+			exit 1 unless ok # check exit status after command runs
+		end
+		puts "done"
+	end
+
+else
+	puts "ERROR: unknown command for rubimc"
+	exit 1
+end

@@ -32,7 +32,7 @@ class << self
 			error_message += "\tfrom #{place}\n"
 		end
 		puts "#ERROR: #{error_message}"
-		exit 0
+		exit 1
 	end
 
 	$pout_destination = :default
@@ -57,7 +57,7 @@ class << self
 			if (($pout_destination == :default) or ($pout_destination.nil?))
 				puts res_str
 				unless defined? TEST_MODE
-					File.open("#{ARGV[0]}.c", 'a+') {|file| file.puts(res_str) }
+					File.open("#{ARGV[0]}", 'a+') {|file| file.puts(res_str) }
 				end
 			else
 				$pout_destination.concat(res_str).concat("\n")
@@ -88,6 +88,8 @@ class RubimCode
 
 	END { # execute when user`s program is end
 		exit 0 if defined? TEST_MODE
+
+		# if compile program for MCU
 		Controllers.all.each do |controllerClass|
 			@level = 0
 			controllerClass.print_layout(:before_main)
@@ -97,14 +99,15 @@ class RubimCode
 			Interrupts.print
 		end # each Controllers.all
 
+		# if compile clear-C program 
 		if Controllers.all.count == 0 and eval("self.private_methods.include? :main")
 			@level = 0
 			Controllers.print_cc_layout(:before_main)
-			eval("main(CC_ARGS.new)")
+			eval("main(CC_ARGS.new)") # execute method :main (CC_ARGS - helper for C agruments argc/argv)
 			Controllers.print_cc_layout(:after_main)
 		end
 
 		# MICRO_NAME if defined? MICRO_NAME
-		exit 1
+		exit 0
 		}
 end

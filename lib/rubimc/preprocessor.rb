@@ -255,33 +255,33 @@ class RubimRipper
 end # class RubimRipper
 
 class PreProcessor
-	@@programm = ""
+	@@program = ""
 
-	def self.programm; @@programm; end
-	def self.programm=(str); @@programm = str; end
+	def self.program; @@program; end
+	def self.program=(str); @@program = str; end
 
 	def self.execute(str)
-		@@programm = str
-		@@programm = RubimRipper.replace_assing_operators(@@programm)
-		@@programm = RubimRipper.replace_all_numeric(@@programm)
+		@@program = str
+		@@program = RubimRipper.replace_assing_operators(@@program)
+		@@program = RubimRipper.replace_all_numeric(@@program)
 
 		# Последовательность очень важна - не нарушать!
-		@@programm = RubimRipper.replace_then_else_elsif_kw(@@programm)
+		@@program = RubimRipper.replace_then_else_elsif_kw(@@program)
 
-		@@programm = RubimRipper.replace_modify_express(@@programm, "if")
-		@@programm = RubimRipper.replace_modify_express(@@programm, "unless")
-		@@programm = RubimRipper.replace_modify_express(@@programm, "while")
-		@@programm = RubimRipper.replace_modify_express(@@programm, "until")
+		@@program = RubimRipper.replace_modify_express(@@program, "if")
+		@@program = RubimRipper.replace_modify_express(@@program, "unless")
+		@@program = RubimRipper.replace_modify_express(@@program, "while")
+		@@program = RubimRipper.replace_modify_express(@@program, "until")
 
-		@@programm = RubimRipper.replace_flat_express(@@programm, "if")
-		@@programm = RubimRipper.replace_flat_express(@@programm, "unless")
-		@@programm = RubimRipper.replace_flat_express(@@programm, "while")
-		@@programm = RubimRipper.replace_flat_express(@@programm, "until")
+		@@program = RubimRipper.replace_flat_express(@@program, "if")
+		@@program = RubimRipper.replace_flat_express(@@program, "unless")
+		@@program = RubimRipper.replace_flat_express(@@program, "while")
+		@@program = RubimRipper.replace_flat_express(@@program, "until")
 
-		@@programm = RubimRipper.replace_loop(@@programm)
-		@@programm = RubimRipper.replace_rubim_tmpif(@@programm)
+		@@program = RubimRipper.replace_loop(@@program)
+		@@program = RubimRipper.replace_rubim_tmpif(@@program)
 
-		# @@programm = RubimRipper.replace_boolean_kw(@@programm)
+		# @@program = RubimRipper.replace_boolean_kw(@@program)
 
 
 		# See 
@@ -292,48 +292,35 @@ class PreProcessor
 		# --- OLD VERSION, BASED ON REGEXP ---
 		# убрать пробелы между всеми односимвольными операторами (кроме оператора ":")
 		# operators = "\\+\\-\\*\\/\\^\\!\\=\\~\\?\\:\\%\\|\\&"
-		# @@programm.gsub!(/\ *?([#{operators}&&[^\:]])\ ?/, '\1')
+		# @@program.gsub!(/\ *?([#{operators}&&[^\:]])\ ?/, '\1')
 
 		# замена оператора "=" на ".c_assign=" (только перед переменными)
 		# ch = "a-zA-Z"
-		# @@programm.gsub!(/(^|[^#{ch}\.])([#{ch}\d]+)=([^\=\~])/, '\1\2.c_assign=\3')
+		# @@program.gsub!(/(^|[^#{ch}\.])([#{ch}\d]+)=([^\=\~])/, '\1\2.c_assign=\3')
 
 		# замена всех цифр(Fixnum), после которых идут операторы, на UserVariable.new()
-		# @@programm.gsub!(/(^|[^\w])([-+]?\d*\.?\d+)([#{operators}&&[^\=]])/, '\1UserVariable.new(\2)\3')
+		# @@program.gsub!(/(^|[^\w])([-+]?\d*\.?\d+)([#{operators}&&[^\=]])/, '\1UserVariable.new(\2)\3')
 		# замена всех цифр(Fixnum), после которых идет указание метода, на UserVariable.new()
-		# @@programm.gsub!(/(^|[^\w])(\d+)(\.[\w&&[^\d]])/, '\1UserVariable.new(\2)\3')
+		# @@program.gsub!(/(^|[^\w])(\d+)(\.[\w&&[^\d]])/, '\1UserVariable.new(\2)\3')
 	end 
 
-end
 
-# write preprocessing programm in file
-unless defined? TEST_MODE 
-	input_file = ARGV[0]
-	if input_file.nil?
-	 	puts "ERROR: Input file in params is not defined"
-	 	exit
+	# write preprocessing program in file
+	def self.write_in_file(input_file, dirname, basename, outfile)
+		# basename = File.basename(input_file)
+		# dirname = File.dirname(input_file)
+		# outfile = "#{dirname}/release"
+
+		# # clear directory "release"
+		# Dir.mkdir(outfile) unless Dir.exists?(outfile)
+		# Dir.foreach(outfile) do |file| 
+		# 	File.delete("#{outfile}/#{file}") if (file!='.' && file!='..')
+		# end
+		
+		PreProcessor.execute( File.read(input_file) )
+		File.write("#{outfile}", PreProcessor.program)
+
+		print "done\n"
 	end
 
-	unless File.exist?(input_file)
-	 	puts "ERROR: File #{input_file} not found"
-	 	exit
-	end
-
-	print "start preprocessor..."
-	file_name = input_file.split('/')[-1]
-	file_path = input_file.split('/')[0..-2].join('/')
-	release_path = "#{file_path}/release"
-	release_path[0] = '' if release_path[0] == '/'
-
-	# clear directory "release"
-	Dir.mkdir(release_path) unless Dir.exists?(release_path)
-	Dir.foreach(release_path) do |file| 
-		File.delete("#{release_path}/#{file}") if (file!='.' && file!='..')
-	end
-	
-	pre_file = "#{release_path}/#{file_name}"
-	PreProcessor.execute( File.read(ARGV[0]) )
-	File.write(pre_file, PreProcessor.programm)
-
-	print "done\n"
 end

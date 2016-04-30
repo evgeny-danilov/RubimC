@@ -5,18 +5,19 @@ It is a Ruby compiler and framework for microcontrollers. Full name RubimCode in
 RubimC designed to simplify the process of programming microcontrollers, but can also be used as an clear С-code generator. The framework is a syntax-flavored Ruby combines the unique features of the Ruby, adding and expanding the functions required for a specific area. At the input  generator takes the program to Ruby, and the output provides a pure C code, based on the user program and libraries that are connected to a select model of the microcontroller. All that is required to generate is installed ruby-interpreter. If it`s nessesary, for compile C-code you need installing compiler *gcc* or *avr-gcc* (for AVR microcontrollers)
 
 ### Benefits of writing programs in RubymC 
-    - increase development speed
-    - code readability and elegance inherent in the Ruby language
-    - an object-oriented approach
-    - the use of an interpreted language does not reduce the performance of the final program because there is no virtual mashine
-     - ability of hardware control IC and delivery of messages
-     - ability to get a list of the hardware for a particular version of the device, as well as a list of all methods and help them directly from the generator console, on the basis of libraries.
++ increase development speed
++ code readability and elegance inherent in the Ruby language
++ an object-oriented approach
++ the use of an interpreted language does not reduce the performance of the final program because there is no virtual mashine
++ ability of hardware control IC and delivery of messages
++ ability to get a list of the hardware for a particular version of the device, as well as a list of all methods and help them directly from the generator console, on the basis of libraries.
 
 ### Why?
-First of all for fan...I want to see at Ruby from other point, not only from famous framework Ruby On Rails. Of course, we have great project [mruby] (http://mruby.org/), that compile Ruby code, realized all common functions of Ruby and standart libraries, and supported by **Matz**. But...mruby generate a big-size code, and, as we know, microcontroller have very small memory. For example, for initialize only one array mruby generate binary file with size 1MB! At the other side RubimC generate code with minimal size, in most cases are not different from the similar size, written on clear C. In addition, RubimC generator is clearness. You always can to see on generated C-code and to evaluate its performance and size.
+First of all for fan...I want to see at Ruby from other point, not only from famous framework Ruby On Rails. Of course, we have great project [mruby] (http://mruby.org/), that compile Ruby code, realized all common functions of Ruby and standart libraries, and supported by **Matz**. But...mruby generate a big-size code, and, as we know, microcontroller have very small memory. For example, for initialize only one array mruby generate binary file with size 1MB! At the other side RubimC generate code with minimal size, in most cases are not different from the similar size of, written on C. In addition, RubimC generator is clearness. You always can to see on generated C-code and to evaluate its performance and size.
 
 ### How it`s work
 Code generated in three stage:
+
 1. Preprocessing user programm, that replaced some Ruby keywords, operators and identificators
 2. Shell Ruby-code and generate C-code (use metaprograming of Ruby)
 3. Compile C-code (with gcc or avr-gcc).
@@ -24,7 +25,7 @@ Code generated in three stage:
 ### Install
 All you need to use **RubimC** gem is Ruby interpretator and gcc/avr-gcc compiler. 
 
-How to [install Ruby] (https://www.ruby-lang.org/en/documentation/installation/). For Ubuntu I recomended to use first chapter of this [manual] (https://gorails.com/setup/ubuntu/16.04).
+How to [install Ruby] (https://www.ruby-lang.org/en/documentation/installation/). For Ubuntu I recomended to use first chapter of this [manual] (https://gorails.com/setup/ubuntu).
 
 Then you can to install RubimC gem:
 ```sh
@@ -33,17 +34,19 @@ gem install rubimc
 
 Compiler *gcc* provided by Linux. For others platforms use this [manual] (https://gcc.gnu.org/install/binaries.html).
 
-To install *avr-gcc* user this [manual] (http://avr-eclipse.sourceforge.net/wiki/index.php/The_AVR_GCC_Toolchain).
+To install *avr-gcc* use this [manual] (http://avr-eclipse.sourceforge.net/wiki/index.php/The_AVR_GCC_Toolchain).
 
 
 ### ToDo list (main of them):
 1. Add Rake-generators:
+    + rubimc compile BrainController.rb (done)
+    + rubimc compile --all (done)
     + rubimc generate controller Brain type:attiny13 receive_buffer:usb
-    + rubimc compile Brain
 2. Code generator:
     + validate ruby-program before compile
     + define user`s variables as local (now it defined in top-level instance)
-    + support array, hash, string and range type
+    + support all C types of variables
+    + support array, hash, string, range and constants
     + support user`s methods and classes
     + support threads
 3. Write libraries for microcontrollers (AVR, PIC, STM, e.t.)
@@ -65,7 +68,7 @@ class FirstController < AVR_attiny13
         end
     end
 
-    def main_loop # # infinit loop, it stop only when IC is reset
+    def main_loop # infinit loop, it stop only when MCU is reset
     end
 end
 ```
@@ -75,7 +78,7 @@ Download *rubim-compile-avr* from this repository and run script in console:
 ./rubim-compile-avr FirstController.rb
 ```
 
-that generate C-code (placed in *"release/FirstController.rb.c"*)
+It generate C-code placed in *"release/FirstController.rb.c"*
 ```c
 //=============================
 #include <stdbool.h>
@@ -152,6 +155,6 @@ end
 ```
 
 ### Help
-If you interested the project and find some bugs, you may to write the tests and we try to fix it. Examples of tests is placed in folder *tests*. To run tests use command *"rspec tests/test_all.rb"*.
+If you interested the project and find some bugs, you may to write the tests and we try to fix it. Examples of tests is placed in folder *test*. To run tests use command *"rspec test/test_all.rb"*.
 
 Thank you!
