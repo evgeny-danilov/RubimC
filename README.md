@@ -116,9 +116,9 @@ ISR(ADC_vect)
 ### Some rake helpers
 For create new project RubimC gem support command "generate" (of just "g"). For example:
 ```sh
-rubimc generate mcu "BrainControll.rb" type:attiny13 # create template for AVR microcontroller 'attiny13'
-rubimc g mcu FirstProg # create template for unknown microcontroller
-rubimc g clearC Example # create template for generate clear C code
+rubimc generate mcu "BrainControll.rb" type:attiny13 # create template "BrainControll.rb" for AVR microcontroller 'attiny13'
+rubimc g mcu FirstProg # create template "FirstProg.rb" for unknown microcontroller
+rubimc g clearC Example # create template "Example.rb" for generate clear C code
 ```
 
 ### Some interesting idea
