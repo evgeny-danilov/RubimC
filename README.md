@@ -39,7 +39,6 @@ To install *avr-gcc* use this [manual] (http://avr-eclipse.sourceforge.net/wiki/
 
 ### ToDo list (main of them):
 1. Code generator:
-    + validate ruby-program before compile
     + define user`s variables as local (now it defined in top-level instance)
     + support all C types of variables (int ,float, e.t.)
     + support array, hash, string, range and constants

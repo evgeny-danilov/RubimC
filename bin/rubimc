@@ -113,6 +113,12 @@ elsif exec_type == 'compile'
 		 	exit 1
 		end
 
+		# === check syntax of user program ===
+		print "Check syntax..."
+		sh "ruby -c '#{input_file}'", verbose: false do |ok, res|
+			exit 1 unless ok # check exit status after command runs
+		end
+
 		# === prepare file names ===
 		input_file = File.expand_path(input_file)
 		basename = File.basename(input_file, ".rb") # extract filename without path and extention 
@@ -148,6 +154,7 @@ elsif exec_type == 'compile'
 		sh "ruby '#{outfile}.rb' '#{outfile}'.c", verbose: false do |ok, res|
 			exit 1 unless ok # check exit status after command runs
 		end
+		puts "done"
 
 		# === compile C code to object-code and link to hex/exe ===
 		# ToDo: add DF_CPU (is it need?)
