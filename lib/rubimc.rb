@@ -160,12 +160,6 @@ class RubimCode
 			@@var_array[user_class_name.to_sym] << value
 		end
 
-		# получение списка всех пользовательских классов - наследников UserClass
-		def self.descendants
-			ObjectSpace.each_object(Class).select { |klass| klass < self }
-		end # альтернативная реализация: http://apidock.com/rails/Class/descendants
-
-		#
 		# генерация класса (typedef struct + методы)
 		def self.generate_struct
 			RubimCode.pout "typedef struct {"

@@ -25,6 +25,14 @@ class Object
 		array.each {|el| return true if el == self}
 		return false
 	end
+
+end
+
+class Class
+	# get list of all childs inhereted from self class
+	def descendants
+		ObjectSpace.each_object(Class).select { |klass| klass < self }
+	end # see alternative realization: http://apidock.com/rails/Class/descendants
 end
 
 class Hash

@@ -1,5 +1,6 @@
+# ToDo: replace Controllers to MCUs
 class Controllers
-	def self.all # list of user`s microcontrolles
+	def self.all # list of USER`s microcontrolles
 		@@controllers_array
 	end
 
@@ -34,5 +35,12 @@ class Controllers
 			RubimCode.level -= 1
 			RubimCode.pout "}"
 		end
+	end
+
+	def self.find_mcu(name)
+		series_array = Controllers.descendants
+		real_mcu_array = []
+		series_array.each {|series| real_mcu_array += series.descendants}
+		return real_mcu_array.select {|mcu| mcu.is_real_controller? and mcu::MCU_NAME == name}
 	end
 end

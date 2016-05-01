@@ -2,8 +2,9 @@
 
 # Example:
 #
-#   rubimc generate controller "BrainControll.rb"
-#   rubimc g controller FirstProg
+#   rubimc generate mcu "Brain.rb" type:attiny13
+#   rubimc g mcu FirstProg
+#   rubimc g clearC Example
 # 
 #   rubimc compile "BrainControll.rb"
 #   rubimc compile BrainControll
@@ -12,25 +13,75 @@
 
 require 'rake' 
 
-gem_dir = File.expand_path("..",File.dirname(__FILE__))
-$LOAD_PATH.unshift gem_dir # Look in gem directory for resources first.
+gem_dir = File.expand_path("..", File.dirname(__FILE__))
+$LOAD_PATH.unshift gem_dir # Look in gem directory for resources first
+
 exec_type = ARGV[0]
-
 if exec_type == 'generate' or exec_type == 'g'
-	controller_name = "FirstController"
-	controller_type = "UnknownController"
-	generated_text = "
-require 'rubimc'
+	gen_type = ARGV[1]
+	if gen_type == 'mcu' # generate template for MCU
+		name = ARGV[2]
+		if name.nil?
+			puts "ERROR: you must define mcu name"
+			puts "for example: 'rubimc g mcu ExampleProg'"
+			exit 1
+		end
 
-class #{controller_name} < #{controller_type}
-	def initialize
+		parent = "Unknown_MCU"
+		type_param = ARGV[3] # ToDo: parse params
+		unless type_param.nil?
+			require 'rubimc'
+			RubimCode::Printer.sandbox = true
+
+			type_param = type_param.gsub(/type:/, "")
+			mcu = Controllers.find_mcu("#{type_param}").first
+			if mcu.nil?
+				puts "ERROR: mcu type '#{type_param}'' not found in rubimc libraries"
+				exit 1
+			end
+			series, type = mcu::MCU_SERIES, mcu::MCU_NAME
+			parent = "#{series}_#{type}"
+		end
+
+		generated_text = "
+			require 'rubimc'
+
+			class #{name} < #{parent}
+				def initialize
+				end
+
+				def main_loop # infinit loop, it stop only when IC is reset
+				end
+			end"
+
+	elsif gen_type == 'clearC' # generate template for clear C code
+		name = ARGV[2]
+		if name.nil?
+			puts "ERROR: you must define file name"
+			puts "for example: 'rubimc g clearC ExampleProg'"
+			exit 1
+		end
+
+		generated_text = "
+			require 'rubimc'
+
+			def main(argv)
+			end"
+	else
+		puts "ERROR: unknown param '#{gen_type}'"
+		puts "Available params for generator: mcu; clearC"
+		exit 1
 	end
 
-	def main_loop # infinit loop, it stop only when IC is reset
+	generated_text.gsub!(/\t\t\t/, "")
+	generated_text = generated_text[1..-1]
+	if File.exist?("#{name}.rb")
+		puts "WARNING: file '#{name}.rb' already exist. Overrire it (y/n)?"
+		answer = STDIN.gets
+		exit 1 if ["n\n", "N\n"].include? answer
 	end
-end"
-
-	File.open("#{controller_name}.rb", 'a+') {|file| file.puts(generated_text) }
+	File.open("#{name}.rb", 'w') {|file| file.puts(generated_text) }
+	# => end generate section
 
 elsif exec_type == 'compile'
 
@@ -72,12 +123,7 @@ elsif exec_type == 'compile'
 		# === clear directory "release" ===
 		if need_to_clear_release
 			need_to_clear_release = false
-			# ToDo: clear directory with FileUtils (from rake)
 			FileUtils.rm_rf(Dir.glob("#{release_folder}/*"))
-
-			# Dir.foreach(outfile) do |file| 
-			# 	File.delete("#{outfile}/#{file}") if (file!='.' && file!='..')
-			# end
 		end
 		Dir.mkdir("#{release_folder}/") unless Dir.exists?("#{release_folder}/")
 
@@ -132,5 +178,6 @@ elsif exec_type == 'compile'
 
 else
 	puts "ERROR: unknown command for rubimc"
+	puts "Available commands: compile; generate;"
 	exit 1
 end

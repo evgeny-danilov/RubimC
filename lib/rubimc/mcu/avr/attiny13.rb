@@ -18,7 +18,7 @@ class AVR_attiny13 < AVRController
 		end
 	end # class << self
 
-	MICRO_NAME = "attiny13"
+	MCU_NAME = "attiny13"
 	PORTS = {B: (0...5)}
 
 

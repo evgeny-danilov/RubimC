@@ -98,7 +98,7 @@ class RubimCode::Printer
 	end
 
 	def self.mcu_type
-		code_type == "avr-gcc" ? Controllers.all.first::MICRO_NAME : "undefined"
+		code_type == "avr-gcc" ? Controllers.all.first::MCU_NAME : "undefined"
 	end
 
 	def self.print_main_loop

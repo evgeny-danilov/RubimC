@@ -1,4 +1,6 @@
 class AVRController < Controllers
+	MCU_SERIES = "AVR"
+
 	def self.print_layout(position)
 		if position == :before_main
 			print_cc_layout(:before_main) do 

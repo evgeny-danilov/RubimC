@@ -38,18 +38,15 @@ To install *avr-gcc* use this [manual] (http://avr-eclipse.sourceforge.net/wiki/
 
 
 ### ToDo list (main of them):
-1. Add tasks:
-    + rubimc generate controller Brain type:attiny13
-    + change README (decsribe 'genarate' command)
-2. Code generator:
+1. Code generator:
     + validate ruby-program before compile
     + define user`s variables as local (now it defined in top-level instance)
     + support all C types of variables (int ,float, e.t.)
     + support array, hash, string, range and constants
     + support user`s methods and classes
     + support threads
-3. Write libraries for microcontrollers (AVR, PIC, STM, e.t.)
-4. Fix a lot of possible bugs & features
+2. Write libraries for microcontrollers (AVR, PIC, STM, e.t.)
+3. Fix a lot of possible bugs & features
 
 ### Example for AVR microcontroller:
 Ruby programm (*"FirstController.rb"*):
@@ -81,7 +78,7 @@ or just
 rubimc compile --all
 ```
 
-It generate C-code placed in *"release/FirstController.c"*
+It generate C-code placed in *"release/FirstController.c"* and hex-file for upload in MCU placed in *"release/FirstController.hex*
 ```c
 //=============================
 #include <stdbool.h>
@@ -115,6 +112,14 @@ ISR(ADC_vect)
 }
 ```
 *note: this is a valid C-code, but in real AVR-controllers it may not work, because avr-libraries are still in development*
+
+### Some rake helpers
+For create new project RubimC gem support command "generate" (of just "g"). For example:
+```sh
+rubimc generate mcu "BrainControll.rb" type:attiny13 # create template for AVR microcontroller 'attiny13'
+rubimc g mcu FirstProg # create template for unknown microcontroller
+rubimc g clearC Example # create template for generate clear C code
+```
 
 ### Some interesting idea
 There is interesting idea for connect few microconrollers (IC) via some firmware interfaces, for example I2C or USB **(at this moment is not realized)**. This example will generate two binary files for each microcontroller. 
