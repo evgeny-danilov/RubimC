@@ -18,6 +18,10 @@ class RubimCode
 class << self
 
 	attr_accessor :level
+	def level
+		@level = 0 if @level.nil?
+		@level
+	end
 
 	def perror(error_message)
 		if error_message.nil? or error_message.to_s.nil? 
@@ -35,22 +39,11 @@ class << self
 		exit 1
 	end
 
-	$pout_destination = :default
-	def pout_destination_is(dest)
-		if dest.nil?
-			perror "Wrong parameter for method #{__method__}. Set destination string"
-		end
-
-		if dest.class.name == "String" or dest == :default # dest.is_a? not work...WTF
-			$pout_destination = dest
-		else
-			perror "Wrong parameter for method #{__method__}. Only string variable or ':default' value is permit as a parameters"
-		end
-	end
-
 	def pout(str = "")
-		if str.nil? or str.to_s.nil? 
-			raise ArgumentError, "str is nil" 
+		return if RubimCode::Printer.sandbox == true # don`t print output in sandbox
+
+		if str.nil? or str.to_s.nil?
+			raise ArgumentError, "str is nil"
 		else
 			@level = 0 if @level.nil?
 			res_str = " "*4*@level + str.to_s 
@@ -65,6 +58,20 @@ class << self
 		end
 	end
 
+	# ToDo: remove to RubimCode::Printer
+	$pout_destination = :default
+	def pout_destination=(dest)
+		if dest.nil?
+			perror "Wrong parameter for method #{__method__}. Set destination string"
+		end
+
+		if dest.class.name == "String" or dest == :default # dest.is_a? not work...WTF
+			$pout_destination = dest
+		else
+			perror "Wrong parameter for method #{__method__}. Only string variable or ':default' value is permit as a parameters"
+		end
+	end
+
 	def clear_c(str)
 		pout "// generate with clear_c function"
 		pout str
@@ -75,39 +82,62 @@ class << self
 end # class << self
 end # RubimCode class
 
-class RubimCode
+class RubimCode::Printer
+	class << self
+		attr_accessor :sandbox
+	end
+
+	def self.code_type
+		if not Controllers.all.empty?
+			"avr-gcc" 
+		elsif Controllers.all.empty? and eval("self.private_methods.include? :main")
+			"gcc"
+		else
+			RubimCode.perror "Can not to define type of code"
+		end
+	end
+
+	def self.mcu_type
+		code_type == "avr-gcc" ? Controllers.all.first::MICRO_NAME : "undefined"
+	end
+
 	def self.print_main_loop
-		pout
-		pout "// === Main Infinite Loop === //"
-		pout "while (true) {"
-			@level += 1
+		RubimCode.pout
+		RubimCode.pout "// === Main Infinite Loop === //"
+		RubimCode.pout "while (true) {"
+			RubimCode.level += 1
 			yield # print body of main loop
-			@level -= 1
-		pout"} // end main loop"
+			RubimCode.level -= 1
+		RubimCode.pout"} // end main loop"
+	end
+
+	def self.generate_cc
+		if Controllers.all.count > 1
+			RubimCode.perror "In current version in one file you can define only one Controller Class"
+		end
+
+		if self.code_type == "avr-gcc" # if compile program for MCU
+			Controllers.all.each do |controllerClass|
+				controllerClass.print_layout(:before_main)
+				controller = controllerClass.new # print initialize section
+				print_main_loop {controller.main_loop} # print body of main loop
+				controllerClass.print_layout(:after_main)
+				RubimCode::Interrupts.print
+			end # each Controllers.all
+
+		elsif self.code_type == "gcc" # if compile clear-C program 
+			if Controllers.all.empty? and eval("self.private_methods.include? :main")
+				Controllers.print_cc_layout(:before_main)
+				eval("main(RubimCode::CC_ARGS.new)") # execute method :main (CC_ARGS - helper for C agruments argc/argv)
+				Controllers.print_cc_layout(:after_main)
+			end
+		end
 	end
 
 	END { # execute when user`s program is end
 		exit 0 if defined? TEST_MODE
-
-		# if compile program for MCU
-		Controllers.all.each do |controllerClass|
-			@level = 0
-			controllerClass.print_layout(:before_main)
-			controller = controllerClass.new # print initialize section
-			print_main_loop {controller.main_loop} # print body of main loop
-			controllerClass.print_layout(:after_main)
-			Interrupts.print
-		end # each Controllers.all
-
-		# if compile clear-C program 
-		if Controllers.all.count == 0 and eval("self.private_methods.include? :main")
-			@level = 0
-			Controllers.print_cc_layout(:before_main)
-			eval("main(CC_ARGS.new)") # execute method :main (CC_ARGS - helper for C agruments argc/argv)
-			Controllers.print_cc_layout(:after_main)
-		end
-
-		# MICRO_NAME if defined? MICRO_NAME
+		exit 0 if sandbox == true
+		self.generate_cc
 		exit 0
 		}
 end

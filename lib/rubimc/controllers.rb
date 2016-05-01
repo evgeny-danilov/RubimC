@@ -29,6 +29,7 @@ class Controllers
 			RubimCode.pout "int main(int argc, char *argv[]) {"
 			RubimCode.level += 1
 		else
+			RubimCode.pout
 			RubimCode.pout "return 1;"
 			RubimCode.level -= 1
 			RubimCode.pout "}"

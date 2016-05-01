@@ -178,9 +178,9 @@ class RubimCode
 
 			public_instance_methods(false).each do |method_name| 
 				tmp_str = ""
-				pout_destination_is(tmp_str)
+				pout_destination = tmp_str
 				return_var = self.new("(*params)").send(method_name).to_rubim
-				pout_destination_is(:default)
+				pout_destination = :default
 				return_var.type = "void" if return_var.type.nil? # if type is not set
 
 				RubimCode.pout "#{return_var.type} #{method_name.to_s} (#{self.to_s} *params) {"

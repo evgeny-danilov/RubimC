@@ -38,10 +38,12 @@ To install *avr-gcc* use this [manual] (http://avr-eclipse.sourceforge.net/wiki/
 
 
 ### ToDo list (main of them):
-1. Add Rake-generators:
+0. auto define mmcu type
+1. Add tasks:
     + rubimc compile BrainController.rb (done)
     + rubimc compile --all (done)
     + rubimc generate controller Brain type:attiny13 receive_buffer:usb
+    + change README (decsribe 'genarate' command)
 2. Code generator:
     + validate ruby-program before compile
     + define user`s variables as local (now it defined in top-level instance)
@@ -73,12 +75,16 @@ class FirstController < AVR_attiny13
 end
 ```
 
-Download *rubim-compile-avr* from this repository and run script in console:
+To compile this code run in console:
 ```sh
-./rubim-compile-avr FirstController.rb
+rubimc compile FirstController.rb
+```
+or just
+```sh
+rubimc compile --all
 ```
 
-It generate C-code placed in *"release/FirstController.rb.c"*
+It generate C-code placed in *"release/FirstController.c"*
 ```c
 //=============================
 #include <stdbool.h>
@@ -155,6 +161,6 @@ end
 ```
 
 ### Help
-If you interested the project and find some bugs, you may to write the tests and we try to fix it. Examples of tests is placed in folder *test*. To run tests use command *"rspec test/test_all.rb"*.
+If you interested the project and find some bugs, you may to write the tests and we try to fix it. Examples of tests is placed in folder *test*. To run tests use command *"rspec test/test_all.rb"*. Of course if you try to modify core and libraries it will wonder.
 
 Thank you!

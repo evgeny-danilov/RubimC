@@ -66,23 +66,36 @@ elsif exec_type == 'compile'
 		input_file = File.expand_path(input_file)
 		basename = File.basename(input_file, ".rb") # extract filename without path and extention 
 		dirname = File.dirname(input_file)
+		release_folder = "#{dirname}/release/"
 		outfile = "#{dirname}/release/#{basename}"
 
 		# === clear directory "release" ===
-		Dir.mkdir(outfile) unless Dir.exists?(outfile)
 		if need_to_clear_release
 			need_to_clear_release = false
 			# ToDo: clear directory with FileUtils (from rake)
+			FileUtils.rm_rf(Dir.glob("#{release_folder}/*"))
 
 			# Dir.foreach(outfile) do |file| 
 			# 	File.delete("#{outfile}/#{file}") if (file!='.' && file!='..')
 			# end
 		end
+		Dir.mkdir("#{release_folder}/") unless Dir.exists?("#{release_folder}/")
 
 		# === preprocessing user`s program ===
 		print "preprocessing file \"#{basename}.rb\"..."
 		require 'rubimc/preprocessor'
 		PreProcessor.write_in_file(input_file, dirname, basename, "#{outfile}.rb")
+
+		# === check type: gcc/avr-gcc
+		require "#{outfile}.rb"
+		unless defined? RubimCode
+			puts "ERROR: file '#{outfile}.rb' is not rubimc program"
+			exit 1
+		end
+		RubimCode::Printer.sandbox = true
+		RubimCode::Printer.generate_cc
+		code_type = RubimCode::Printer.code_type
+		mcu_type = RubimCode::Printer.mcu_type
 
 		# === execute preprocessing program, generate C code ===
 		puts "generate C code"
@@ -90,21 +103,31 @@ elsif exec_type == 'compile'
 			exit 1 unless ok # check exit status after command runs
 		end
 
-		# === compile C code to object-code ===
+		# === compile C code to object-code and link to hex/exe ===
 		# ToDo: add DF_CPU (is it need?)
-		# ToDo: auto define mmcu type
-		print "compile..."
-		sh "avr-gcc -std=c99 -Os -mmcu=attiny13 -c '#{outfile}.c' -o '#{outfile}.o'", verbose: false do |ok, res|
-			exit 1 unless ok # check exit status after command runs
-		end
-		puts "done"
+		if code_type == "avr-gcc"
+			print "compile and link..."
+			sh "avr-gcc -std=c99 -Os -mmcu=#{mcu_type} -c '#{outfile}.c' -o '#{outfile}.o'", verbose: false do |ok, res|
+				exit 1 unless ok # check exit status after command runs
+			end
+			# generate hex for upload to MCU
+			sh "avr-objcopy -O ihex '#{outfile}.o' '#{outfile}.hex'", verbose: false do |ok, res|
+				exit 1 unless ok # check exit status after command runs
+			end
+			puts "done"
 
-		# === generate hex for upload to MCU ===
-		print "link..."
-		sh "avr-objcopy -O ihex '#{outfile}.o' '#{outfile}.hex'", verbose: false do |ok, res|
-			exit 1 unless ok # check exit status after command runs
+		elsif code_type == "gcc"
+			print "compile and link..."
+			sh "gcc  -std=c99 -o '#{outfile}.out' '#{outfile}.c'", verbose: false do |ok, res|
+				exit 1 unless ok # check exit status after command runs
+			end
+			puts "done"
+
+			print "run..."
+			sh "'#{outfile}.out'", verbose: false do |ok, res|
+				exit 1 unless ok # check exit status after command runs
+			end
 		end
-		puts "done"
 	end
 
 else

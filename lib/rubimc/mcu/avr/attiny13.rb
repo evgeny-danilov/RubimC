@@ -149,7 +149,7 @@ class AVR_attiny13 < AVRController
 			# Genetare Interrupt code
 			if block_given?
 				interrupt_code = "" # Write code in variable "interrupt_code"
-				RubimCode.pout_destination_is(interrupt_code)
+				RubimCode.pout_destination = interrupt_code
 				old_level = RubimCode.level
 				RubimCode.level = 0
 
@@ -165,7 +165,7 @@ class AVR_attiny13 < AVRController
 				RubimCode.pout ("}")
 
 				RubimCode.level = old_level
-				RubimCode.pout_destination_is(:default)
+				RubimCode.pout_destination = :default
 				RubimCode::Interrupts.add(interrupt_code)
 			end
 		end # interrupt method
