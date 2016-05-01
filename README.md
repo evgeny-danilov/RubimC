@@ -27,7 +27,7 @@ All you need to use **RubimC** gem is Ruby interpretator and gcc/avr-gcc compile
 
 How to [install Ruby] (https://www.ruby-lang.org/en/documentation/installation/). For Ubuntu I recomended to use first chapter of this [manual] (https://gorails.com/setup/ubuntu).
 
-Then you can to install RubimC gem:
+Then you can install RubimC gem:
 ```sh
 gem install rubimc
 ```
@@ -161,6 +161,6 @@ end
 ```
 
 ### Help
-If you interested the project and find some bugs, you may to write the tests and we try to fix it. Examples of tests is placed in folder *test*. To run tests use command *"rspec test/test_all.rb"*. Of course if you try to modify core and libraries it will wonder.
+If you interested the project and find some bugs, you may to write the tests and we try to fix it. Examples of tests is placed in folder *test*. To run tests use command *"rspec test/test_all.rb"*. Of course if you try to modify core and libraries it will be wonder.
 
 Thank you!
