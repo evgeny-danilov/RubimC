@@ -1,9 +1,4 @@
 #####################################################################
-# NOTE!                                                             #
-# To compile this example you must use 'rubim-compile-avr' script   #
-# Replace this examples in root directory of RubimC.            	#
-# Generated C-code and binary files will placed in folder "release" #
-# 																	#
 # Example: "Clear-C code"                                         	#
 # Author: Evgeny Danilov                                        	#
 # Created at 2016-04-26                                         	#

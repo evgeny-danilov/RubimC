@@ -38,16 +38,13 @@ To install *avr-gcc* use this [manual] (http://avr-eclipse.sourceforge.net/wiki/
 
 
 ### ToDo list (main of them):
-0. auto define mmcu type
 1. Add tasks:
-    + rubimc compile BrainController.rb (done)
-    + rubimc compile --all (done)
-    + rubimc generate controller Brain type:attiny13 receive_buffer:usb
+    + rubimc generate controller Brain type:attiny13
     + change README (decsribe 'genarate' command)
 2. Code generator:
     + validate ruby-program before compile
     + define user`s variables as local (now it defined in top-level instance)
-    + support all C types of variables
+    + support all C types of variables (int ,float, e.t.)
     + support array, hash, string, range and constants
     + support user`s methods and classes
     + support threads
