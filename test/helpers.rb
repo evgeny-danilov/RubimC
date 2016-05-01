@@ -16,7 +16,7 @@ def input_set(str)
 	PreProcessor.execute(str)
 	$test_mcu.instance_eval ("
 		def test_code
-			#{PreProcessor.programm}
+			#{PreProcessor.program}
 		end")
 	$test_mcu.test_code
 end

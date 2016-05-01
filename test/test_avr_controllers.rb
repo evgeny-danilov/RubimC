@@ -1,7 +1,7 @@
 #####################################################################
 # TEST AVR Controllers												#
 #####################################################################
-require_relative "../lib/avr/attiny13.rb"
+require "rubimc/mcu/avr/attiny13.rb"
 
 class TinyController < AVR_attiny13; end
 

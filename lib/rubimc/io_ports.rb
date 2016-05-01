@@ -2,9 +2,9 @@ def output (var, port: nil, pin: nil, type: "normal")
 	if port.nil? or pin.nil?
 		RubimCode.perror "Необходимо указать порт и пин для выхода #{var}"
 	elsif not self.class::PORTS.include? port
-		RubimCode.perror "У микроконтроллера #{self.class::MICRO_NAME} нет порта #{port}"
+		RubimCode.perror "У микроконтроллера #{self.class::MCU_NAME} нет порта #{port}"
 	elsif not self.class::PORTS[port].include? pin.to_i
-		RubimCode.perror "У микроконтроллера #{self.class::MICRO_NAME} нет порта пина #{pin} для порта #{port}"
+		RubimCode.perror "У микроконтроллера #{self.class::MCU_NAME} нет порта пина #{pin} для порта #{port}"
 
 	elsif type == "normal"
 		# define_method(var.to_sym) do
