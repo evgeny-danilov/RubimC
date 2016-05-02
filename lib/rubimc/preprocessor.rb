@@ -132,6 +132,38 @@ class RubimRipper
     	return source
     end
 
+    def self.add_binding_to_init(source) # for initialize variables with methods 'integer', 'float', e.t.
+		sexp = Ripper.sexp(source)
+		command_array = find_rec(sexp, :command)
+		command_array.reverse_each do |elem|
+			varies_name = []
+			symb, helper_name, helper_pos = elem[1]
+			if helper_name.in? ["integer", "float", "string"] # if one of helper methods
+				args_add_block = find_rec(elem, :args_add_block)[0][1]
+				args_add_block.each do |arg|
+					if arg[0] == :symbol_literal
+						tmp_res = []
+						tmp_res << find_rec(arg, :@ident)[0]
+						tmp_res << find_rec(arg, :@ivar)[0]
+						tmp_res << find_rec(arg, :@gvar)[0]
+						varies_name << tmp_res.compact.map {|el| el[1]}
+					elsif arg[0] == :bare_assoc_hash
+						bare_array = find_rec(arg, :@label)
+						bare_array.each do |bare|
+							varies_name << bare[1][0..-2]
+						end
+						break
+					else
+						raise ArgumentError.new("Wrong arguments for helper '#{helper_name}'") 
+					end
+				end
+				var_str = varies_name.join(', ') # list of vars, defined in helper method
+				source = paste_before_pos(source, "#{var_str} = ", helper_pos) # paste vars before helper method
+			end
+		end
+		return source
+    end
+
 	#########################
     # === PRIVATE SECTION ===
     #########################
@@ -148,7 +180,7 @@ class RubimRipper
 	    end
 
 	    # Замена слов
-	    def self.replace_words(source, dstr, rstr, pos) # источник, исход. слово, конечное слово, начальная позиция
+	    def self.replace_words(source, dstr, rstr, pos) # источник, исходное слово, конечное слово, начальная позиция
 	        output = ""
 	        lineno, charno = pos
 	        source.lines.each_with_index do |line, index| 
@@ -234,7 +266,6 @@ class RubimRipper
 	    	lexs.each do |lex|
 	            lex_pos, ident, symb = lex
 	    		if ((lex_pos <=> start_pos) >= 0) then
-	    		# if ((lex_pos[0] >= start_pos[0]) and (lex_pos[1] >= start_pos[1])) then
 		    		if ((ident==:on_nl && symb=="\n") or
 		    			(ident==:on_semicolon && symb==";") or
 		    			(ident==:on_kw && symb=="do") or
@@ -275,6 +306,8 @@ class PreProcessor
 
 		@@program = RubimRipper.replace_loop(@@program)
 		@@program = RubimRipper.replace_rubim_tmpif(@@program)
+
+		@@program = RubimRipper.add_binding_to_init(@@program)
 
 		# @@program = RubimRipper.replace_boolean_kw(@@program)
 

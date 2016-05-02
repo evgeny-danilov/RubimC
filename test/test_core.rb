@@ -6,6 +6,7 @@ class TestController < Controllers; end
 RSpec.describe TestController do
 	before :each do
 		RubimCode.level = 1
+		$before_input = ''
 		$outstr = ''
 		$test_mcu = TestController.new
 	end

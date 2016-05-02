@@ -2,6 +2,20 @@
 # TEST PREPROCESSOR													#
 #####################################################################
 RSpec.describe PreProcessor do
+	it "add binding when init variables" do
+		PreProcessor.execute("integer :par")
+		expect(PreProcessor.program).to eq("par = integer :par")
+
+		PreProcessor.execute("integer par: :integer")
+		expect(PreProcessor.program).to eq("par = integer par: :integer")
+
+		PreProcessor.execute("float :var1, :var2, var3: ADC0, var4: :met, var5: method")
+		expect(PreProcessor.program).to eq("var1, var2, var3, var4, var5 = float :var1, :var2, var3: ADC0, var4: :met, var5: method")
+
+		PreProcessor.execute("string :@par, :$glob")
+		expect(PreProcessor.program).to eq("@par, $glob = string :@par, :$glob")
+	end
+
 	it "replace '=' to '.c_assign='" do
 		PreProcessor.execute("b=c")
 		expect(PreProcessor.program).to eq("b.c_assign=c")

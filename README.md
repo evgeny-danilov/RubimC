@@ -8,7 +8,7 @@ RubimC designed to simplify the process of programming microcontrollers, but can
 + increase development speed
 + code readability and elegance inherent in the Ruby language
 + an object-oriented approach
-+ the use of an interpreted language does not reduce the performance of the final program because there is no virtual mashine
++ the use of an interpreted language does not reduce the performance of the final program because there is **no virtual mashine**
 + ability of hardware control IC and delivery of messages
 + ability to get a list of the hardware for a particular version of the device, as well as a list of all methods and help them directly from the generator console, on the basis of libraries.
 
@@ -38,14 +38,23 @@ To install *avr-gcc* use this [manual] (http://avr-eclipse.sourceforge.net/wiki/
 
 
 ### ToDo list (main of them):
+0. upload to rubygems
+0. Test core with command "rubimc test"
 1. Code generator:
     + define user`s variables as local (now it defined in top-level instance)
-    + support all C types of variables (int ,float, e.t.)
+    + support all C types of variables (int ,float, unsigned int, u_int8 e.t.)
     + support array, hash, string, range and constants
     + support user`s methods and classes
     + support threads
 2. Write libraries for microcontrollers (AVR, PIC, STM, e.t.)
 3. Fix a lot of possible bugs & features
+
+### What is done
+1. Init variables
+2. Support all arithmetic operation except ternary and logical operators (binary operators is done)
+3. Support conditions (if/unless and it`s modify version) and loops (while/until) except next/redo/break/retry keywords
+4. Support arrays init and arithmetic operation with it
+5. Realize example library for AVR AtTiny13 MCU with DigitalIO and ADC support
 
 ### Example for AVR microcontroller:
 Ruby programm (*"FirstController.rb"*):

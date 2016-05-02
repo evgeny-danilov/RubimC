@@ -2,8 +2,14 @@
 # Initialize user`s variables										#
 #####################################################################
 
+class << RubimCode
+	attr_accessor :binding
+end
+
 def integer(*varies) # varies - набор инициализируемых переменных
-	str = nil
+	str_cc = "int "
+	ret_var = []
+
 	varies.each {|var|
 		# ToDo - поиск уже объявленных переменных и выдача предупреждений
 
@@ -11,18 +17,31 @@ def integer(*varies) # varies - набор инициализируемых пе
 			RubimCode.perror "Ошибка. В бета-версии нельзя назначать переменным значения при объявлении"
 			# key = var.keys.first
 			# instance_variable_set("@#{key.to_s}" , UserVariable.new("#{key.to_s}"))
-			# str += "#{key.to_s}=#{var[key]}, "
+			# str_cc += "#{key.to_s}=#{var[key]}, "
 		else
-			# if self.ancestors.include? RubimCode or self == TestController
-				str = "int " if str.nil?
-				str += "#{var}, "
+			if var.to_s[0] == '@'
+				# ToDo:
+				RubimCode.perror "ToDo:"
+			elsif var.to_s[0] == '$'
+				# ToDo or delete
+				RubimCode.perror "Ошибка. В текущей версии нельзя инициализировать глобальные переменные"
+			else
+				str_cc += "#{var}, "
+				ret_var << RubimCode::UserVariable.new("#{var}", 'int')
+			end
 
-				eval ("
-					def #{var}
-						@users__var__#{var}
-					end
-					@users__var__#{var} = RubimCode::UserVariable.new(\"#{var}\", 'int')
-					")
+			# if self.ancestors.include? RubimCode or self == TestController
+
+				# str_cc = "int " if str_cc.nil?
+				# str_cc += "#{var}, "
+
+				# eval ("
+				# 	def #{var}
+				# 		@users__var__#{var}
+				# 	end
+				# 	@users__var__#{var} = RubimCode::UserVariable.new(\"#{var}\", 'int')
+				# 	")
+
 				# # Альтернативная реализация
 				# var_method = Proc.new {instance_variable_get("@users__var__#{var}")}
 				# self.class.send(:define_method, var.to_sym, var_method)
@@ -40,7 +59,16 @@ def integer(*varies) # varies - набор инициализируемых пе
 			# end
 		end
 	}
-	RubimCode.pout ("#{str.chomp(', ')};") if str
+	if ret_var.empty?
+		RubimCode.perror "no variables to init" 
+	end
+	RubimCode.pout ("#{str_cc.chomp(', ')};")
+
+	if ret_var.count == 1
+		return ret_var[0]
+	else
+		return ret_var
+	end
 end
 
 def array_of_integer(var, size: nil)

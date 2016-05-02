@@ -3,20 +3,16 @@ def clear_str(str)
 end
 
 def before_input(str)
-	$test_mcu.instance_eval ("
-		def before_test
-			#{str}
-		end")
-	$test_mcu.before_test
-	$outstr = ''
+	$before_input = PreProcessor.execute(str)
 end
 
 def input_set(str)
-	$outstr = ''
-	PreProcessor.execute(str)
+	str = PreProcessor.execute(str)
 	$test_mcu.instance_eval ("
 		def test_code
-			#{PreProcessor.program}
+			#{$before_input}
+			$outstr = ''
+			#{str}
 		end")
 	$test_mcu.test_code
 end
@@ -30,3 +26,4 @@ class RubimCode
 		$outstr = "Custom Error"
 	end
 end
+
