@@ -7,33 +7,43 @@ class << RubimCode
 end
 
 def integer(*varies) # varies - набор инициализируемых переменных
-	str_cc = "int "
-	ret_var = []
+	type_cc = "int"
+	vars_cc = ""
+	rubim_vars = []
 
 	varies.each {|var|
 		# ToDo - поиск уже объявленных переменных и выдача предупреждений
 
 		if var.is_a? Hash # ToDo
-			RubimCode.perror "Ошибка. В бета-версии нельзя назначать переменным значения при объявлении"
+			RubimCode.perror "Ошибка. В текущей версии нельзя назначать переменным значения при объявлении"
 			# key = var.keys.first
 			# instance_variable_set("@#{key.to_s}" , UserVariable.new("#{key.to_s}"))
-			# str_cc += "#{key.to_s}=#{var[key]}, "
-		else
-			if var.to_s[0] == '@'
-				# ToDo:
-				RubimCode.perror "ToDo:"
-			elsif var.to_s[0] == '$'
-				# ToDo or delete
-				RubimCode.perror "Ошибка. В текущей версии нельзя инициализировать глобальные переменные"
-			else
-				str_cc += "#{var}, "
-				ret_var << RubimCode::UserVariable.new("#{var}", 'int')
+			# vars_cc += "#{key.to_s}=#{var[key]}, "
+
+		elsif var.is_a? Symbol
+			var_str = var.to_s
+			var_name = var_str.gsub(/^[@$]/, "")
+			new_var = RubimCode::UserVariable.new("#{var_name}", type_cc)
+			rubim_vars << new_var
+
+			if var_str[0..1] == "@@"
+				RubimCode.perror "Ruby-like class variables are not supported yet. Use 'integer :@#{var_name}'"
 			end
+
+			case var_str[0]
+				when '@' # define INSTANCE variable (in C it defined as global - outside the 'main' function)
+					RubimCode::Printer.instance_vars_cc << new_var
+				when '$' # define GLOBAL variable 
+					RubimCode.perror "Ruby-like global variables are not supported yet. Use 'integer :@#{var_name}'"
+				else # define LOCAL variable (in C it defined as local)
+					vars_cc += "#{var_name}, "
+			end
+			
 
 			# if self.ancestors.include? RubimCode or self == TestController
 
-				# str_cc = "int " if str_cc.nil?
-				# str_cc += "#{var}, "
+				# vars_cc = "int " if vars_cc.nil?
+				# vars_cc += "#{var}, "
 
 				# eval ("
 				# 	def #{var}
@@ -57,17 +67,22 @@ def integer(*varies) # varies - набор инициализируемых пе
 			# 			end
 			# 			")
 			# end
+		else
+			RubimCode.perror "Unknown type of parameters for helper #{__method__}"
 		end
 	}
-	if ret_var.empty?
-		RubimCode.perror "no variables to init" 
+	if rubim_vars.empty?
+		RubimCode.perror "No variables for initialize"
 	end
-	RubimCode.pout ("#{str_cc.chomp(', ')};")
+	unless vars_cc.empty?
+		vars_cc.chomp!(", ")
+		RubimCode.pout ("#{type_cc} #{vars_cc};")
+	end
 
-	if ret_var.count == 1
-		return ret_var[0]
+	if rubim_vars.count == 1
+		return rubim_vars[0]
 	else
-		return ret_var
+		return rubim_vars
 	end
 end
 

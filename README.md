@@ -38,8 +38,10 @@ To install *avr-gcc* use this [manual] (http://avr-eclipse.sourceforge.net/wiki/
 
 
 ### ToDo list (main of them):
-0. upload to rubygems
 0. Test core with command "rubimc test"
+1. $pout_destination - move to class variables of Printer
+1. refactoring print_layout / print_cc_layout
+1. Validate code before preprocessing
 1. Code generator:
     + define user`s variables as local (now it defined in top-level instance)
     + support all C types of variables (int ,float, unsigned int, u_int8 e.t.)
@@ -53,7 +55,7 @@ To install *avr-gcc* use this [manual] (http://avr-eclipse.sourceforge.net/wiki/
 1. Init variables
 2. Support all arithmetic operation except ternary and logical operators (binary operators is done)
 3. Support conditions (if/unless and it`s modify version) and loops (while/until) except next/redo/break/retry keywords
-4. Support arrays init and arithmetic operation with it
+4. Support arrays init and arithmetic operation with it (sorry, no it don`t)
 5. Realize example library for AVR AtTiny13 MCU with DigitalIO and ADC support
 
 ### Example for AVR microcontroller:

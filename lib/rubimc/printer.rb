@@ -47,10 +47,15 @@ class << self
 		else
 			@level = 0 if @level.nil?
 			res_str = " "*4*@level + str.to_s 
-			if (($pout_destination == :default) or ($pout_destination.nil?))
+			if $pout_destination.in? [:default, nil]
 				puts res_str
 				unless defined? TEST_MODE
 					File.open("#{ARGV[0]}", 'a+') {|file| file.puts(res_str) }
+				end
+			elsif $pout_destination == :h_file
+				unless defined? TEST_MODE
+					h_name = ARGV[0].gsub(/\.c$/, '') + ".h"
+					File.open("#{h_name}", 'a+') {|file| file.puts(res_str) }
 				end
 			else
 				$pout_destination.concat(res_str).concat("\n")
@@ -65,7 +70,7 @@ class << self
 			perror "Wrong parameter for method #{__method__}. Set destination string"
 		end
 
-		if dest.class.name == "String" or dest == :default # dest.is_a? not work...WTF
+		if dest.class.name == "String" or dest.in? [:default, :h_file] # dest.is_a?(String) not work...WTF
 			$pout_destination = dest
 		else
 			perror "Wrong parameter for method #{__method__}. Only string variable or ':default' value is permit as a parameters"
@@ -83,6 +88,11 @@ end # class << self
 end # RubimCode class
 
 class RubimCode::Printer
+	@@instance_vars_cc = []
+	def self.instance_vars_cc
+		@@instance_vars_cc
+	end
+
 	class << self
 		attr_accessor :sandbox
 	end
@@ -111,6 +121,14 @@ class RubimCode::Printer
 		RubimCode.pout"} // end main loop"
 	end
 
+	def self.print_instance_vars
+		RubimCode.pout_destination = :h_file
+		@@instance_vars_cc.each do |var|
+			RubimCode.pout "#{var.type} #{var.name};"
+		end
+		RubimCode.pout_destination = :default
+	end
+
 	def self.generate_cc
 		if Controllers.all.count > 1
 			RubimCode.perror "In current version in one file you can define only one Controller Class"
@@ -118,17 +136,18 @@ class RubimCode::Printer
 
 		if self.code_type == "avr-gcc" # if compile program for MCU
 			Controllers.all.each do |controllerClass|
-				controllerClass.print_layout(:before_main)
+				controllerClass.print_layout(:before_main) # implement of this in mcu-libraries
 				controller = controllerClass.new # print initialize section
 				print_main_loop {controller.main_loop} # print body of main loop
-				controllerClass.print_layout(:after_main)
-				RubimCode::Interrupts.print
+				controllerClass.print_layout(:after_main) # implement of this in mcu-libraries
+				RubimCode::Interrupts.print()
+				RubimCode::Printer.print_instance_vars()
 			end # each Controllers.all
 
-		elsif self.code_type == "gcc" # if compile clear-C program 
+		elsif self.code_type == "gcc" # if compile clear-C program
 			if Controllers.all.empty? and eval("self.private_methods.include? :main")
 				Controllers.print_cc_layout(:before_main)
-				eval("main(RubimCode::CC_ARGS.new)") # execute method :main (CC_ARGS - helper for C agruments argc/argv)
+				eval("main(RubimCode::CC_ARGS.new)") # execute user`s method :main (CC_ARGS - helper for C agruments argc/argv)
 				Controllers.print_cc_layout(:after_main)
 			end
 		end
