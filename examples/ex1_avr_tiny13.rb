@@ -18,12 +18,10 @@ class FirstController < AVR_attiny13
             led.off if volts < 30
             led.on if volts >= 220
         end
-
-        @viar = 123
     end
 
     def main_loop # # infinit loop, it stop only when IC is reset
         integer :qwe
-        qwe = 12
+        qwe = @viar
     end
 end

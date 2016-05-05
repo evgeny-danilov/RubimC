@@ -38,24 +38,24 @@ To install *avr-gcc* use this [manual] (http://avr-eclipse.sourceforge.net/wiki/
 
 
 ### ToDo list (main of them):
-0. Test core with command "rubimc test"
-1. $pout_destination - move to class variables of Printer
-1. refactoring print_layout / print_cc_layout
 1. Validate code before preprocessing
+1. Support C-libraries
 1. Code generator:
     + define user`s variables as local (now it defined in top-level instance)
     + support all C types of variables (int ,float, unsigned int, u_int8 e.t.)
-    + support array, hash, string, range and constants
+    + check match types (in assign and operations) and try to cast
+    + support array, hash, string, range and constants (as full as possible)
     + support user`s methods and classes
     + support threads
 2. Write libraries for microcontrollers (AVR, PIC, STM, e.t.)
 3. Fix a lot of possible bugs & features
 
-### What is done
-1. Init variables
+### What is done now
+1. Initialize integer variables
 2. Support all arithmetic operation except ternary and logical operators (binary operators is done)
-3. Support conditions (if/unless and it`s modify version) and loops (while/until) except next/redo/break/retry keywords
-4. Support arrays init and arithmetic operation with it (sorry, no it don`t)
+3. Support conditions (if/unless with return values and it modify version)
+4. Suppotr loops (while/until and it modify version) except next/redo/break/retry keywords
+4. Support arrays init and arithmetic operation with it (sorry, didn`t it)
 5. Realize example library for AVR AtTiny13 MCU with DigitalIO and ADC support
 
 ### Example for AVR microcontroller:

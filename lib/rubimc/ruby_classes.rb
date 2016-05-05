@@ -16,7 +16,7 @@ class Object
 					else nil
 				end
 		if type.nil? or self.to_s.nil?
-			perror "Неизвестный тип переменной"
+			RubimCode.perror "Неизвестный тип переменной"
 		end
 		UserVariable.new(self.to_s, type)
 	end

@@ -183,6 +183,13 @@ elsif exec_type == 'compile'
 		end
 	end
 
+# Development mode
+elsif exec_type == "dev_compile"
+	puts "development mode"
+	sh "gem build rubimc.gemspec"
+	sh "gem install rubimc-0.2.1.gem"
+	sh "rubimc compile #{ARGV[1]}"
+
 else
 	puts "ERROR: unknown command for rubimc"
 	puts "Available commands: compile; generate;"

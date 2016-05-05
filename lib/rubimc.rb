@@ -38,7 +38,10 @@ class RubimCode
 			self
 		end
 
-		def c_assign=(val) 
+		def c_assign=(val)
+			unless val.is_a? UserVariable
+				RubimCode.perror "Wrong match types"
+			end
 			RubimCode.pout "#{@name} = #{val};"
 		end
 

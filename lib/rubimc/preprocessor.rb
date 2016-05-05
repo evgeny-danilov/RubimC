@@ -232,7 +232,7 @@ class RubimRipper
 	        raise "can not find near position in array #{array}"
 	    end
 
-	    # Поиск позиции наиболее дальнего идентификатора справа
+	    # Поиск позиции наиболее дальнего идентификатора справа (рекурсивно)
 	    def self.find_far_pos(array)
 	        array.reverse_each do |el|
 	            if el.is_a? Array # если найден идентификатор, указывающий на позицию

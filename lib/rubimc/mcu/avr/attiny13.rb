@@ -8,7 +8,7 @@ class AVR_attiny13 < AVRController
 			true
 		end
 
-		def micro_layout 
+		def mcu_layout 
 			# ToDo: set F_CPU from user programm
 			RubimCode.pout "#define __AVR_ATtiny13__ 1" 
 			RubimCode.pout "#define F_CPU 1000000UL" # Microcontroller frequency (Hz)
@@ -149,7 +149,7 @@ class AVR_attiny13 < AVRController
 			# Genetare Interrupt code
 			if block_given?
 				interrupt_code = "" # Write code in variable "interrupt_code"
-				RubimCode.pout_destination = interrupt_code
+				RubimCode::Printer.pout_destination = interrupt_code
 				old_level = RubimCode.level
 				RubimCode.level = 0
 
@@ -165,7 +165,7 @@ class AVR_attiny13 < AVRController
 				RubimCode.pout ("}")
 
 				RubimCode.level = old_level
-				RubimCode.pout_destination = :default
+				RubimCode::Printer.pout_destination = :default
 				RubimCode::Interrupts.add(interrupt_code)
 			end
 		end # interrupt method
