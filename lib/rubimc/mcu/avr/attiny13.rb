@@ -56,19 +56,19 @@ class AVR_attiny13 < AVRController
 			refs0 = case options[:ref] # источник опорного напряжения
 						when "vcc" then 0
 						when "internal" then 1
-						else perror "Undefined value for option :ref in method '#{__method__}'"
+						else RubimCode.perror "Undefined value for option :ref in method '#{__method__}'"
 					end
 
 			adlar = case "right" # options[:result_adjust] # выравнивание результата вычислений всегда по правому краю
 						when "left" then 1
 						when "right" then 0
-						else perror "Undefined value for option :result_adjust in method '#{__method__}'"
+						else RubimCode.perror "Undefined value for option :result_adjust in method '#{__method__}'"
 					end
 
 			channel = options[:channel]
 			unless channel.in? [ADC0, ADC1, ADC2, ADC3]
 				RubimCode.pout channel
-				perror "Undefined value for option :channel in method '#{__method__}'"
+				RubimCode.perror "Undefined value for option :channel in method '#{__method__}'"
 			end
 
 			RubimCode.pout("ADMUX = (#{refs0}<<REFS0) | (#{adlar}<<ADLAR) | #{channel};")
@@ -77,7 +77,7 @@ class AVR_attiny13 < AVRController
 			adate = case options[:auto_triggering] # одиночное преобразование или множественное
 						when "enable" then 1
 						when "disable" then 0
-						else perror "Undefined value for option :auto_triggering in method '#{__method__}'"
+						else RubimCode.perror "Undefined value for option :auto_triggering in method '#{__method__}'"
 					end
 
 			# adif = ? # ToDo: ADC Interrupt Flag 
@@ -92,7 +92,7 @@ class AVR_attiny13 < AVRController
 						when 32 then 5
 						when 64 then 6
 						when 128 then 7
-						else perror "Undefined value for option :prescale in method '#{__method__}'"
+						else RubimCode.perror "Undefined value for option :prescale in method '#{__method__}'"
 					end
 
 			RubimCode.pout ("ADCSRA = (1<<ADEN) | (#{adate}<<ADATE) | (#{adps}<<ADPS0) | (#{adie}<<ADIE);")
@@ -106,7 +106,7 @@ class AVR_attiny13 < AVRController
 			# ToDo: должен возвращать значение, реализовать как С-функцию
 			# ToDo: можно использовать ленивую загрузку Ruby - autoload
 			unless channel.in? [ADC0, ADC1, ADC2, ADC3, nil]
-				perror "Undefined value for option :channel in method '#{__method__}'"
+				RubimCode.perror "Undefined value for option :channel in method '#{__method__}'"
 			end
 			
 			unless channel.nil?
@@ -133,10 +133,10 @@ class AVR_attiny13 < AVRController
 			# 	perror "method #{__method__} mast have a block"
 			# end
 
-			adie = case options[:enabled] # ADC Interrupt Enable
+			adie = case options[:enabled].to_bool # ADC Interrupt Enable
 						when true then 1
 						when false then 0
-						else perror "Undefined value for option :is_enabled in method '#{__method__}'"
+						else RubimCode.perror "Undefined value for option :enabled in method '#{__method__}'"
 					end
 			if adie == 0 # if interrupt disabled
 				RubimCode.pout "Start continuously ADC convert"

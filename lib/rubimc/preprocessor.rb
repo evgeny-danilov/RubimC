@@ -127,8 +127,8 @@ class RubimRipper
     end
 
     def self.replace_boolean_kw(source)
-    	source = replace_keywords(source, "true", "UserVariable.new(true)")
-    	source = replace_keywords(source, "false", "UserVariable.new(false)")
+    	source = replace_keywords(source, "true", "RubimCode::UserVariable.new(true, 'fixed')")
+    	source = replace_keywords(source, "false", "RubimCode::UserVariable.new(false, 'fixed')")
     	return source
     end
 
@@ -138,7 +138,7 @@ class RubimRipper
 		command_array.reverse_each do |elem|
 			varies_name = []
 			symb, helper_name, helper_pos = elem[1]
-			if helper_name.in? ["integer", "float", "string"] # if one of helper methods
+			if helper_name.in? ["boolean", "bool", "integer", "int", "float", "double","string"] # if one of helper methods
 				args_add_block = find_rec(elem, :args_add_block)[0][1]
 				args_add_block.each do |arg|
 					if arg[0] == :symbol_literal
@@ -309,7 +309,7 @@ class PreProcessor
 
 		@@program = RubimRipper.add_binding_to_init(@@program)
 
-		# @@program = RubimRipper.replace_boolean_kw(@@program)
+		@@program = RubimRipper.replace_boolean_kw(@@program)
 
 
 		# See 

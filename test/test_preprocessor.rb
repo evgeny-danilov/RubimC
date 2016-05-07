@@ -3,14 +3,26 @@
 #####################################################################
 RSpec.describe PreProcessor do
 	it "add binding when init variables" do
+		PreProcessor.execute("boolean :var1")
+		expect(PreProcessor.program).to eq("var1 = boolean :var1")
+
+		PreProcessor.execute("bool :var1")
+		expect(PreProcessor.program).to eq("var1 = bool :var1")
+
 		PreProcessor.execute("integer :par")
 		expect(PreProcessor.program).to eq("par = integer :par")
 
 		PreProcessor.execute("integer par: :integer")
 		expect(PreProcessor.program).to eq("par = integer par: :integer")
 
+		PreProcessor.execute("int :@par")
+		expect(PreProcessor.program).to eq("@par = int :@par")
+
 		PreProcessor.execute("float :var1, :var2, var3: ADC0, var4: :met, var5: method")
 		expect(PreProcessor.program).to eq("var1, var2, var3, var4, var5 = float :var1, :var2, var3: ADC0, var4: :met, var5: method")
+
+		PreProcessor.execute("double :@par")
+		expect(PreProcessor.program).to eq("@par = double :@par")
 
 		PreProcessor.execute("string :@par, :$glob")
 		expect(PreProcessor.program).to eq("@par, $glob = string :@par, :$glob")
@@ -48,19 +60,19 @@ RSpec.describe PreProcessor do
 
 	it "replace Fixnum before operators on RubimCode::UserVariable.new()" do 
 		PreProcessor.execute("num == 3 + 5;")
-		expect(PreProcessor.program).to eq("num ==  RubimCode::UserVariable.new(3) +  RubimCode::UserVariable.new(5);")
+		expect(PreProcessor.program).to eq("num ==  RubimCode::UserVariable.new(3, 'fixed') +  RubimCode::UserVariable.new(5, 'fixed');")
 
 		PreProcessor.execute(";num45 += n3 / (345.56* 5.4);")
-		expect(PreProcessor.program).to eq(";num45 += n3 / ( RubimCode::UserVariable.new(345.56)*  RubimCode::UserVariable.new(5.4));")
+		expect(PreProcessor.program).to eq(";num45 += n3 / ( RubimCode::UserVariable.new(345.56, 'fixed')*  RubimCode::UserVariable.new(5.4, 'fixed'));")
 
 		PreProcessor.execute("tim = +0.79 +(45-3) - num")
-		expect(PreProcessor.program).to eq("tim .c_assign= + RubimCode::UserVariable.new(+0.79) +( RubimCode::UserVariable.new(45)- RubimCode::UserVariable.new(3)) - num")
+		expect(PreProcessor.program).to eq("tim .c_assign= + RubimCode::UserVariable.new(+0.79, 'fixed') +( RubimCode::UserVariable.new(45, 'fixed')- RubimCode::UserVariable.new(3, 'fixed')) - num")
 
 		PreProcessor.execute("mit = mit +1")
-		expect(PreProcessor.program).to eq("mit .c_assign= mit + RubimCode::UserVariable.new(+1)")
+		expect(PreProcessor.program).to eq("mit .c_assign= mit + RubimCode::UserVariable.new(+1, 'fixed')")
 
 		PreProcessor.execute("mit = mit -1")
-		expect(PreProcessor.program).to eq("mit .c_assign= mit - RubimCode::UserVariable.new(1)")
+		expect(PreProcessor.program).to eq("mit .c_assign= mit - RubimCode::UserVariable.new(1, 'fixed')")
 
 		PreProcessor.execute("mit = mit %1")
 		expect(PreProcessor.program).to eq("mit .c_assign= mit %1")
@@ -68,7 +80,7 @@ RSpec.describe PreProcessor do
 
 	it "replace Fixnum before methods on RubimCode::UserVariable.new()" do 
 		PreProcessor.execute("28.times do |count3|")
-		expect(PreProcessor.program).to eq(" RubimCode::UserVariable.new(28).times do |count3|")
+		expect(PreProcessor.program).to eq(" RubimCode::UserVariable.new(28, 'fixed').times do |count3|")
 	end
 
 
@@ -173,7 +185,7 @@ RSpec.describe PreProcessor do
 				puts 'qwe'
 			end")
 		expect(PreProcessor.program).to eq("
-			RubimCode.rubim_unless (true)  do;
+			RubimCode.rubim_unless (RubimCode::UserVariable.new(true, 'fixed'))  do;
 				puts 'qwe'
 			end")
 	end
@@ -182,7 +194,7 @@ RSpec.describe PreProcessor do
 
 	it "replace while modify expression" do
 		PreProcessor.execute("puts 'qwe' while true")
-		expect(PreProcessor.program).to eq("puts 'qwe' if RubimCode.rubim_begin; RubimCode.rubim_whilemod true")
+		expect(PreProcessor.program).to eq("puts 'qwe' if RubimCode.rubim_begin; RubimCode.rubim_whilemod RubimCode::UserVariable.new(true, 'fixed')")
 
 		PreProcessor.execute("
 			begin
@@ -203,23 +215,23 @@ RSpec.describe PreProcessor do
 				puts 'qwe'
 			end")
 		expect(PreProcessor.program).to eq("
-			RubimCode.rubim_while true  do
+			RubimCode.rubim_while RubimCode::UserVariable.new(true, 'fixed')  do
 				puts 'qwe'
 			end")
 
 		PreProcessor.execute("
-			while (false)  do ;
+			while (tmp_cond)  do ;
 				puts 'qwe'
 			end")
 		expect(PreProcessor.program).to eq("
-			RubimCode.rubim_while (false)  do ;
+			RubimCode.rubim_while (tmp_cond)  do ;
 				puts 'qwe'
 			end")
 	end
 
 	it "replace until modify expression" do
-		PreProcessor.execute("puts 'qwe' until true\n")
-		expect(PreProcessor.program).to eq("puts 'qwe' if RubimCode.rubim_begin; RubimCode.rubim_untilmod true\n")
+		PreProcessor.execute("puts 'qwe' until tmp_cond\n")
+		expect(PreProcessor.program).to eq("puts 'qwe' if RubimCode.rubim_begin; RubimCode.rubim_untilmod tmp_cond\n")
 	end
 
 	it "replace until expression" do

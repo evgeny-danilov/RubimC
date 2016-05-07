@@ -16,13 +16,11 @@ end
 
 class RubimCode
 class << self
-
 	attr_accessor :level
-	def level
-		@level = 0 if @level.nil?
-		@level
-	end
+end
+@level = 0
 
+class << self
 	def perror(error_message)
 		if error_message.nil? or error_message.to_s.nil? 
 			raise ArgumentError, "error message is not string" 

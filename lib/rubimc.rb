@@ -31,7 +31,13 @@ class RubimCode
 		end
 
 		def to_i
-			@name.to_i
+			self.name.to_i
+		end
+
+		def to_bool
+			return true   if self.name == true   || self.name =~ (/(true|t|yes|y|1)$/i)
+			return false  if self.name == false  || self.name.blank? || self.name =~ (/(false|f|no|n|0)$/i)
+			RubimCode.perror "Can not convert variable #{self} to boolean"
 		end
 
 		def to_rubim
@@ -45,7 +51,7 @@ class RubimCode
 			RubimCode.perror "Undefined variable or method" if val.nil?
 			RubimCode.perror "Wrong match types" unless val.is_a? UserVariable
 
-			RubimCode.pout "#{@name} = #{val};"
+			RubimCode.pout "#{self.name} = #{val};"
 		end
 
 		def common_operator(val, operator_sym, **options)
@@ -245,7 +251,7 @@ class RubimCode
 			return unless self.enabled
 			return unless self.outside_binding
 			return unless var.is_a? UserVariable
-			return if var.type.in? ["fixed", "expression", nil]
+			return if var.type.in? ["fixed", "expression", "undefined", nil]
 			return if var.type === /^tmp/
 
 			if !local_variables.include?(var.name) and 

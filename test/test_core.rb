@@ -21,6 +21,16 @@ RSpec.describe TestController do
 		# ToDo
 	end
 
+	it 'init float' do
+		input_set("float :viar")
+		expect($outstr).to eq("float viar;")
+	end
+
+	it 'init boolean' do
+		input_set("boolean :viar")
+		expect($outstr).to eq("bool viar;")
+	end
+
 	it 'assign integer with expression' do
 		before_input("integer :b, :c, :u1")
 		input_set("u1 = b + c * b + b")
@@ -141,14 +151,14 @@ RSpec.describe TestController do
 				tim = 333 if mit!= tim & false
 			end unless tim == true")
 		expect($outstr).to eq(clear_str("
-			if (!((tim==true))) {
+			if (!((tim==(true)))) {
 				mit = (tim+(2));
 				int __rubim__rval2 = 0;
 				if ((mit==(3))) {
 					mit = (mit-(345));
 					__rubim__rval2 = (mit-(345));
 					}
-				if ((mit!=(tim&false))) {
+				if ((mit!=(tim&(false)))) {
 					tim = (333);
 					}
 				}"))
@@ -159,10 +169,10 @@ RSpec.describe TestController do
 		input_set("tim = if true then 3 end")
 		expect($outstr).to eq(clear_str("
 			int __rubim__rval1 = 0;
-			if (true) {
+			if ((true)) {
 				__rubim__rval1 = (3);
 				}
-			tim = __rubim__rval1;"))
+			tim = (__rubim__rval1);"))
 	end
 
 	# ToDo: add tests for while/until/loop

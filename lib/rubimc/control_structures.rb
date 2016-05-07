@@ -25,7 +25,7 @@ class << self
 		pout "__rubim__rval#{@level-1} = #{ret_val};" if ret_val!="__rubim__noreturn"
 		pout "}"
 		@level -= 1
-		return "__rubim__rval#{@level}"
+		return RubimCode::UserVariable.new("__rubim__rval#{@level}", 'tmp_int')
 	end
 
 	# instructions "while" & "until"

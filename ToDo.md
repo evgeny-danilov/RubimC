@@ -1,7 +1,6 @@
 List of small tasks:
-1. support float and bool C-types (and write tests)
 1. realize rubim_next and rubimc_break (and write tests)
-1. check scope of variables in interrupts (see example "ex1_avr_tiny13.rb")
+1. try to delete kw "END" from RubimCode::Printer (modify script "bin/rubimc")
 2. output/input - init vars like in method :integer
 1. Test core with command "rubimc test"
 5. Реализация пользовательских методов def()

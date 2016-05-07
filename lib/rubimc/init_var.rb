@@ -52,9 +52,27 @@ def RubimCode.init_vars(type_cc, *variables) # variables - набор иници
 	end
 end
 
+def boolean(*variables)
+	RubimCode.init_vars("bool", *variables)
+end
+alias :bool :boolean
+
 def integer(*variables)
 	RubimCode.init_vars("int", *variables)
 end
+alias :int :integer
+
+def float(*variables)
+	RubimCode.init_vars("float", *variables)
+end
+
+def double(*variables)
+	RubimCode.init_vars("double", *variables)
+end
+###############################################################################
+# NOTE! When add NEW TYPES, modify preprocessor: method 'add_binding_to_init' #
+###############################################################################
+
 
 def array_of_integer(var, size: nil)
 	array(var, with: {type: :integer, size: size})
@@ -70,6 +88,7 @@ def array(var, with: {type: 'UserVariable', size: nil})
 
 	user_class = with[:type]
 	with[:type] = 'int' if with[:type] == 'integer'
+	with[:type] = 'bool' if with[:type] == 'boolean'
 	if (with[:type].in? ['bool','int','float','double','string']) 
 		user_class = "UserVariable"
 	end
