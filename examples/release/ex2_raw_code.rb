@@ -16,16 +16,16 @@ def main(argv)
 	end
 	printf "\n"
 
-	integer :b
-	boolean :c
-	double :u1
-	b = 1; c = false
-	u1 = b + c*b + (2*b)
+	b = integer :b
+	c = boolean :c
+	u1 = double :u1
+	b .c_assign=  RubimCode::UserVariable.new(1, 'fixed'); c .c_assign= RubimCode::UserVariable.new(false, 'fixed')
+	u1 .c_assign= b + c*b + ( RubimCode::UserVariable.new(2, 'fixed')*b)
 
-	if b
-		if c==u1
-			b = c + 27
-			u1 = 33 if b!= c
+	RubimCode.rubim_if b do
+		RubimCode.rubim_if c==u1 do
+			b .c_assign= c +  RubimCode::UserVariable.new(27, 'fixed')
+			u1 .c_assign=  RubimCode::UserVariable.new(33, 'fixed') if RubimCode.rubim_ifmod b!= c; RubimCode.rubim_end;
 		end 
 	end
 
