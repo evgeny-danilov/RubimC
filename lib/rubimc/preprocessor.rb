@@ -164,6 +164,12 @@ class RubimRipper
 		return source
     end
 
+    def self.replace_instructions(source)
+		source = replace_keywords(source, "next", "RubimCode.rubim_next")
+		source = replace_keywords(source, "break", "RubimCode.rubim_break")
+		return source
+    end
+
 	#########################
     # === PRIVATE SECTION ===
     #########################
@@ -288,10 +294,10 @@ class PreProcessor
 
 	def self.execute(str)
 		@@program = str
+		
+		# Последовательность очень важна - не нарушать!
 		@@program = RubimRipper.replace_assing_operators(@@program)
 		@@program = RubimRipper.replace_all_numeric(@@program)
-
-		# Последовательность очень важна - не нарушать!
 		@@program = RubimRipper.replace_then_else_elsif_kw(@@program)
 
 		@@program = RubimRipper.replace_modify_express(@@program, "if")
@@ -308,47 +314,15 @@ class PreProcessor
 		@@program = RubimRipper.replace_rubim_tmpif(@@program)
 
 		@@program = RubimRipper.add_binding_to_init(@@program)
-
-		@@program = RubimRipper.replace_boolean_kw(@@program)
-
-
-		# See 
-		#  p defined?(x = 1) # => "assignment"
-		#  p defined?(x[5] = 1) # => "method"
-		#  p defined?(x[5] += 1) # => "method"
-
-		# --- OLD VERSION, BASED ON REGEXP ---
-		# убрать пробелы между всеми односимвольными операторами (кроме оператора ":")
-		# operators = "\\+\\-\\*\\/\\^\\!\\=\\~\\?\\:\\%\\|\\&"
-		# @@program.gsub!(/\ *?([#{operators}&&[^\:]])\ ?/, '\1')
-
-		# замена оператора "=" на ".c_assign=" (только перед переменными)
-		# ch = "a-zA-Z"
-		# @@program.gsub!(/(^|[^#{ch}\.])([#{ch}\d]+)=([^\=\~])/, '\1\2.c_assign=\3')
-
-		# замена всех цифр(Fixnum), после которых идут операторы, на UserVariable.new()
-		# @@program.gsub!(/(^|[^\w])([-+]?\d*\.?\d+)([#{operators}&&[^\=]])/, '\1UserVariable.new(\2)\3')
-		# замена всех цифр(Fixnum), после которых идет указание метода, на UserVariable.new()
-		# @@program.gsub!(/(^|[^\w])(\d+)(\.[\w&&[^\d]])/, '\1UserVariable.new(\2)\3')
+		@@program = RubimRipper.replace_instructions(@@program) # next/break
+		@@program = RubimRipper.replace_boolean_kw(@@program) # true/false
 	end 
 
 
 	# write preprocessing program in file
 	def self.write_in_file(input_file, dirname, basename, outfile)
-		# basename = File.basename(input_file)
-		# dirname = File.dirname(input_file)
-		# outfile = "#{dirname}/release"
-
-		# # clear directory "release"
-		# Dir.mkdir(outfile) unless Dir.exists?(outfile)
-		# Dir.foreach(outfile) do |file| 
-		# 	File.delete("#{outfile}/#{file}") if (file!='.' && file!='..')
-		# end
-		
 		PreProcessor.execute( File.read(input_file) )
 		File.write("#{outfile}", PreProcessor.program)
-
-		print "done\n"
 	end
 
 end

@@ -58,5 +58,8 @@ class << self
 	def rubim_elsif(cond); @level-=1; pout "} else if (#{cond}) {"; @level+=1; end
 	# ToDo: in 'else' and 'elsif' set return_val, like in rubim_if (need to change preprocessor)
 
+	def rubim_next; pout "continue;" end
+	def rubim_break; pout "break;" end
+
 end # class << self
 end # RubimCode class

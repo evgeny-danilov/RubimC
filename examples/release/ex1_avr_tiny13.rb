@@ -25,6 +25,7 @@ class FirstController < AVR_attiny13
             output :led, port: :B, pin:  RubimCode::UserVariable.new(3, 'fixed')
             led.off if RubimCode.rubim_ifmod volts <  RubimCode::UserVariable.new(30, 'fixed'); RubimCode.rubim_end;
             led.on if RubimCode.rubim_ifmod volts >=  RubimCode::UserVariable.new(220, 'fixed'); RubimCode.rubim_end;
+            RubimCode.rubim_break
         end
     end
 

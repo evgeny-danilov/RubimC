@@ -147,6 +147,14 @@ RSpec.describe PreProcessor do
 			end")
 	end
 
+	it "replace next and break control instructions" do
+		PreProcessor.execute("next")
+		expect(PreProcessor.program).to eq("RubimCode.rubim_next")
+
+		PreProcessor.execute("break")
+		expect(PreProcessor.program).to eq("RubimCode.rubim_break")
+	end
+
 	it "replace unless modify expression" do
 		PreProcessor.execute("puts 'qwe' unless tmp_cond")
 		expect(PreProcessor.program).to eq("puts 'qwe' if RubimCode.rubim_unlessmod tmp_cond; RubimCode.rubim_end;")

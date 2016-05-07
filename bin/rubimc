@@ -137,6 +137,7 @@ elsif exec_type == 'compile'
 		print "preprocessing file \"#{basename}.rb\"..."
 		require 'rubimc/preprocessor'
 		PreProcessor.write_in_file(input_file, dirname, basename, "#{outfile}.rb")
+		print "done\n"
 
 		# === check type: gcc/avr-gcc
 		require "#{outfile}.rb"

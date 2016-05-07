@@ -54,7 +54,7 @@ To install *avr-gcc* use this [manual] (http://avr-eclipse.sourceforge.net/wiki/
 1. Initialize variables (with types: bool/int/float/double)
 2. Support most of ruby operators (arithmetic, unary, comparison, binary)
 3. Support conditions (if/unless with return values and it modify version)
-4. Suppotr loops (while/until and it modify version) except next/redo/break/retry keywords
+4. Suppotr loops (while/until and it modify version) except redo/retry instruction
 4. Support arrays init and arithmetic operation with it (sorry, didn`t it)
 5. Realize example library for AVR AtTiny13 MCU with DigitalIO and ADC support
 
