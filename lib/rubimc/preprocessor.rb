@@ -51,7 +51,7 @@ class RubimRipper
             if (ident.in? [:on_int, :on_float])
             	bug_plus = (symb[0]=="+" ? "+" : "")
             	# Note: space before "UserVariable" is neсessary
-            	source = replace_words(source, symb, "#{bug_plus} RubimCode::UserVariable.new(#{symb})", pos)
+            	source = replace_words(source, symb, "#{bug_plus} RubimCode::UserVariable.new(#{symb}, 'fixed')", pos)
             end
     	end
     	return source

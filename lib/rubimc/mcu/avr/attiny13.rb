@@ -127,6 +127,7 @@ class AVR_attiny13 < AVRController
 		end
 
 		def self.interrupt(**options, &block)
+
 			options.permit_and_default!(enabled: false)
 			# if is_enabled && block.nil? # ToDo: проверить на наличие блока если прерывание активно
 			# 	perror "method #{__method__} mast have a block"
@@ -146,7 +147,7 @@ class AVR_attiny13 < AVRController
 				# RubimCode.pout ("sei();") # automatically set (is it?)
 			end
 			
-			# Genetare Interrupt code
+			# Generate Interrupt code
 			if block_given?
 				interrupt_code = "" # Write code in variable "interrupt_code"
 				RubimCode::Printer.pout_destination = interrupt_code
@@ -160,7 +161,10 @@ class AVR_attiny13 < AVRController
 					# ToDo - надо точно  разобраться с выравниванием 
 					# (see above in convert method)
 					RubimCode.pout "int __rubim__volt = ADCL + ((ADCH&0b11) << 8);"
-					yield (RubimCode::UserVariable.new("__rubim__volt", "int"))
+			        RubimCode::Isolator.outside_binding = block.binding
+			        RubimCode::Isolator.run
+					yield(RubimCode::UserVariable.new("__rubim__volt", "int"))
+			        RubimCode::Isolator.stop
 				RubimCode.level -= 1
 				RubimCode.pout ("}")
 
@@ -174,3 +178,4 @@ class AVR_attiny13 < AVRController
 
 
 end # RubimCode class
+

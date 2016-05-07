@@ -39,9 +39,12 @@ class RubimCode
 		end
 
 		def c_assign=(val)
-			unless val.is_a? UserVariable
-				RubimCode.perror "Wrong match types"
-			end
+			RubimCode::Isolator.permit!(self)
+			RubimCode::Isolator.permit!(val)
+
+			RubimCode.perror "Undefined variable or method" if val.nil?
+			RubimCode.perror "Wrong match types" unless val.is_a? UserVariable
+
 			RubimCode.pout "#{@name} = #{val};"
 		end
 
@@ -113,7 +116,8 @@ class RubimCode
 		end
 
 		# ToDo: add mixins Enumerable and Comparable
-	end
+		
+	end # end UserVariable class
 
 	# ToDo: в Ruby присваивание значений индексной переменной 
 	# не должно влиять на выполнение цикла
@@ -129,7 +133,7 @@ class RubimCode
 		def to_s
 			self.name
 		end
-	end
+	end # end LoopCounter class
 
 	class UserArray < Array
 		attr_accessor :name, :type
@@ -151,7 +155,7 @@ class RubimCode
 			RubimCode.level -=1
 			RubimCode.pout "}"
 		end
-	end
+	end # end UserArray class
 
 	# Наследник всех пользовательских классов
 	class UserClass < UserVariable
@@ -197,7 +201,7 @@ class RubimCode
 			end
 		end
 
-	end
+	end # end UserClass class
 
 	# Список аппаратных прерываний (содержит Си-код в текстовом виде)
 	class Interrupts
@@ -220,7 +224,36 @@ class RubimCode
 				RubimCode.pout interrupt_code
 				end
 		end
-	end
+	end # end Interrupts class
+
+	class Isolator
+		class << self
+			attr_accessor :outside_binding
+			attr_accessor :local_variables
+			attr_accessor :enabled
+		end
+
+		def self.permit!(var)
+			return true unless self.enabled
+			return true unless self.outside_binding
+			return false unless var.is_a? UserVariable
+
+			if !local_variables.include?(var.name) and 
+				var.type != "fixed" and
+				outside_binding.local_variable_defined?(var.name.to_sym)
+					RubimCode.perror "Undefined variable '#{var.name}'. To pass params in interruprts use instance variables: '@#{var.name}'"
+			end
+		end
+
+		def self.run
+	        self.local_variables = []
+			self.enabled = true
+		end
+
+		def self.stop
+			self.enabled = false
+		end
+	end # end Isolator class
 
 	class CC_ARGS # class for arguments when work with clear C-code
 		def count
@@ -230,7 +263,7 @@ class RubimCode
 		def [](index)
 			RubimCode::UserVariable.new("argv[#{index}]", "int")
 		end
-	end
+	end # end CC_ARGS class
 
 end 
 # === END class RubimCode === #

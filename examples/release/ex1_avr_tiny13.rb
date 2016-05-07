@@ -8,15 +8,17 @@ require 'rubimc'
 
 class FirstController < AVR_attiny13
     def initialize
-        @viar = integer :@viar
-        @viar .c_assign=  RubimCode::UserVariable.new(12)
+        @viar, var1 = integer :@viar, :var1
+        @viar .c_assign=  RubimCode::UserVariable.new(12, 'fixed')
 
         ANALOG_TO_DIGITAL.init(ref: "vcc", channel: ADC0)
 
         ANALOG_TO_DIGITAL.interrupt(enabled: true) do |volts|
-            output :led, port: :B, pin:  RubimCode::UserVariable.new(3)
-            led.off if RubimCode.rubim_ifmod volts <  RubimCode::UserVariable.new(30); RubimCode.rubim_end;
-            led.on if RubimCode.rubim_ifmod volts >=  RubimCode::UserVariable.new(220); RubimCode.rubim_end;
+            output :led, port: :B, pin:  RubimCode::UserVariable.new(3, 'fixed')
+            led.off if RubimCode.rubim_ifmod volts <  RubimCode::UserVariable.new(30, 'fixed'); RubimCode.rubim_end;
+            led.on if RubimCode.rubim_ifmod volts >=  RubimCode::UserVariable.new(220, 'fixed'); RubimCode.rubim_end;
+            var2 = integer :var2
+            var2 .c_assign=  RubimCode::UserVariable.new(3, 'fixed') + var1
         end
     end
 

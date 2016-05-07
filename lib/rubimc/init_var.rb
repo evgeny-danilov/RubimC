@@ -2,16 +2,15 @@
 # Initialize user`s variables										#
 #####################################################################
 
-class << RubimCode
-	attr_accessor :binding
-end
+# class << RubimCode
+# 	attr_accessor :binding
+# end
 
-def integer(*varies) # varies - набор инициализируемых переменных
-	type_cc = "int"
+def RubimCode.init_vars(type_cc, *variables) # variables - набор инициализируемых переменных
 	vars_cc = ""
 	rubim_vars = []
 
-	varies.each {|var|
+	variables.each {|var|
 		# ToDo - поиск уже объявленных переменных и выдача предупреждений
 
 		if var.is_a? Hash # ToDo
@@ -26,47 +25,18 @@ def integer(*varies) # varies - набор инициализируемых пе
 			new_var = RubimCode::UserVariable.new("#{var_name}", type_cc)
 			rubim_vars << new_var
 
-			if var_str[0..1] == "@@"
-				RubimCode.perror "Ruby-like class variables are not supported yet. Use 'integer :@#{var_name}'"
-			end
-
-			case var_str[0]
-				when '@' # define INSTANCE variable (in C it defined as global - outside the 'main' function)
-					RubimCode::Printer.instance_vars_cc << new_var
-				when '$' # define GLOBAL variable 
+			case var_str[0..1]
+				when /$./ # define GLOBAL variable 
 					RubimCode.perror "Ruby-like global variables are not supported yet. Use 'integer :@#{var_name}'"
-				else # define LOCAL variable (in C it defined as local)
+				when /@@/ # define CLASS variable 
+					RubimCode.perror "Ruby-like class variables are not supported yet. Use 'integer :@#{var_name}'"
+				when /@./ # define INSTANCE variable (in C it defined as global - outside the 'main' function)
+					RubimCode::Printer.instance_vars_cc << new_var
+				else 	  # define LOCAL variable (in C it defined as local)
+					RubimCode::Isolator.local_variables << var_name if RubimCode::Isolator.enabled
 					vars_cc += "#{var_name}, "
 			end
 			
-
-			# if self.ancestors.include? RubimCode or self == TestController
-
-				# vars_cc = "int " if vars_cc.nil?
-				# vars_cc += "#{var}, "
-
-				# eval ("
-				# 	def #{var}
-				# 		@users__var__#{var}
-				# 	end
-				# 	@users__var__#{var} = RubimCode::UserVariable.new(\"#{var}\", 'int')
-				# 	")
-
-				# # Альтернативная реализация
-				# var_method = Proc.new {instance_variable_get("@users__var__#{var}")}
-				# self.class.send(:define_method, var.to_sym, var_method)
-				# instance_variable_set("@users__var__#{var}" , UserVariable.new("#{var}", 'int'))
-			# else
-			# 	add_var_array(self.name, UserVariable.new("#{var}", 'int'))
-			# 	eval ("
-			# 			def #{var}=(value)
-			# 				pout \"\#{self.name}.#{var} = \#{value};\"
-			# 			end
-			# 			def #{var}
-			# 				UserVariable.new(\"\#{self.name}.#{var}\", 'int')
-			# 			end
-			# 			")
-			# end
 		else
 			RubimCode.perror "Unknown type of parameters for helper #{__method__}"
 		end
@@ -84,6 +54,10 @@ def integer(*varies) # varies - набор инициализируемых пе
 	else
 		return rubim_vars
 	end
+end
+
+def integer(*variables)
+	RubimCode.init_vars("int", variables)
 end
 
 def array_of_integer(var, size: nil)

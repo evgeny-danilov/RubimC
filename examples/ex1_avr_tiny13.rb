@@ -8,7 +8,7 @@ require 'rubimc'
 
 class FirstController < AVR_attiny13
     def initialize
-        integer :@viar
+        integer :@viar, :var1
         @viar = 12
 
         ANALOG_TO_DIGITAL.init(ref: "vcc", channel: ADC0)
@@ -17,6 +17,8 @@ class FirstController < AVR_attiny13
             output :led, port: :B, pin: 3
             led.off if volts < 30
             led.on if volts >= 220
+            integer :var2
+            var2 = 3 + var1
         end
     end
 
