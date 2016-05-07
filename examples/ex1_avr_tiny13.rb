@@ -10,6 +10,7 @@ class FirstController < AVR_attiny13
     def initialize
         integer :@viar, :var1
         @viar = 12
+        @viar = ~@viar
 
         ANALOG_TO_DIGITAL.init(ref: "vcc", channel: ADC0)
 
@@ -18,7 +19,7 @@ class FirstController < AVR_attiny13
             led.off if volts < 30
             led.on if volts >= 220
             integer :var2
-            var2 = 3 + var1
+            var2 = 3 + @viar
         end
     end
 

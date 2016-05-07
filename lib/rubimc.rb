@@ -48,11 +48,18 @@ class RubimCode
 			RubimCode.pout "#{@name} = #{val};"
 		end
 
-		def common_operator(val, operator_sym)
+		def common_operator(val, operator_sym, **options)
 			if not val.class.respond_to? :to_s
 				RubimCode.perror "Conversion of variable #{val} is impossible. Method 'to_s' not found"
 			else 
-				UserVariable.new(self.name + operator_sym.to_s + val.to_s)
+				if options[:unary]
+					RubimCode::Isolator.permit!(self)
+					UserVariable.new(operator_sym.to_s[0] + self.name, 'expression')
+				else
+					RubimCode::Isolator.permit!(self)
+					RubimCode::Isolator.permit!(val)
+					UserVariable.new(self.name + operator_sym.to_s + val.to_s, 'expression')
+				end
 			end
 		end
 
@@ -68,18 +75,18 @@ class RubimCode
 		# ToDo: (can not override; use preprocessor)
 
 		# Unary Operators:
-		def -@; UserVariable.new("(-" + self.name + ")"); end
-		def +@; UserVariable.new("(+" + self.name + ")"); end
-		def !@; UserVariable.new("(+" + self.name + ")"); end
-		def ~@; UserVariable.new("(+" + self.name + ")"); end
+		def -@; common_operator(nil, __method__, unary: true); end
+		def +@; common_operator(nil, __method__, unary: true); end
+		def !@; common_operator(nil, __method__, unary: true); end
+		def ~@; common_operator(nil, __method__, unary: true); end
 
 		# Comparison Operators:
-		def ==(val);	common_operator(val, __method__); end
-		def !=(val);	common_operator(val, __method__); end
-		def  <(val);	common_operator(val, __method__); end
-		def  >(val);	common_operator(val, __method__); end
-		def <=(val);	common_operator(val, __method__); end
-		def >=(val);	common_operator(val, __method__); end
+		def ==(val); common_operator(val, __method__); end
+		def !=(val); common_operator(val, __method__); end
+		def  <(val); common_operator(val, __method__); end
+		def  >(val); common_operator(val, __method__); end
+		def <=(val); common_operator(val, __method__); end
+		def >=(val); common_operator(val, __method__); end
 
 		# Binary Operators:
 		def &(val); common_operator(val, __method__); end
@@ -94,8 +101,9 @@ class RubimCode
 		# Ternary Operators: (? :)
 		# ToDo...
 
-		# Ruby Parallel Assignment:
-		# a, b, c = 10, 20, 30 # ToDo
+		# Ruby Parallel Assignment :
+		# a, b, c = 10, 20, 30 
+		# ToDo: use preprocessor: => [a, b, c].c_assing= 10, 20, 30
 
 		# ToDo: операторы, которым нет аналогов в Си
 		# def <=>(val);	??? end
@@ -116,7 +124,7 @@ class RubimCode
 		end
 
 		# ToDo: add mixins Enumerable and Comparable
-		
+
 	end # end UserVariable class
 
 	# ToDo: в Ruby присваивание значений индексной переменной 
@@ -234,12 +242,13 @@ class RubimCode
 		end
 
 		def self.permit!(var)
-			return true unless self.enabled
-			return true unless self.outside_binding
-			return false unless var.is_a? UserVariable
+			return unless self.enabled
+			return unless self.outside_binding
+			return unless var.is_a? UserVariable
+			return if var.type.in? ["fixed", "expression", nil]
+			return if var.type === /^tmp/
 
 			if !local_variables.include?(var.name) and 
-				var.type != "fixed" and
 				outside_binding.local_variable_defined?(var.name.to_sym)
 					RubimCode.perror "Undefined variable '#{var.name}'. To pass params in interruprts use instance variables: '@#{var.name}'"
 			end

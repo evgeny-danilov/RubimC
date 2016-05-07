@@ -2,10 +2,6 @@
 # Initialize user`s variables										#
 #####################################################################
 
-# class << RubimCode
-# 	attr_accessor :binding
-# end
-
 def RubimCode.init_vars(type_cc, *variables) # variables - набор инициализируемых переменных
 	vars_cc = ""
 	rubim_vars = []
@@ -57,7 +53,7 @@ def RubimCode.init_vars(type_cc, *variables) # variables - набор иници
 end
 
 def integer(*variables)
-	RubimCode.init_vars("int", variables)
+	RubimCode.init_vars("int", *variables)
 end
 
 def array_of_integer(var, size: nil)

@@ -10,6 +10,7 @@ class FirstController < AVR_attiny13
     def initialize
         @viar, var1 = integer :@viar, :var1
         @viar .c_assign=  RubimCode::UserVariable.new(12, 'fixed')
+        @viar .c_assign= ~@viar
 
         ANALOG_TO_DIGITAL.init(ref: "vcc", channel: ADC0)
 
@@ -18,7 +19,7 @@ class FirstController < AVR_attiny13
             led.off if RubimCode.rubim_ifmod volts <  RubimCode::UserVariable.new(30, 'fixed'); RubimCode.rubim_end;
             led.on if RubimCode.rubim_ifmod volts >=  RubimCode::UserVariable.new(220, 'fixed'); RubimCode.rubim_end;
             var2 = integer :var2
-            var2 .c_assign=  RubimCode::UserVariable.new(3, 'fixed') + var1
+            var2 .c_assign=  RubimCode::UserVariable.new(3, 'fixed') + @viar
         end
     end
 

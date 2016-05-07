@@ -163,7 +163,7 @@ class AVR_attiny13 < AVRController
 					RubimCode.pout "int __rubim__volt = ADCL + ((ADCH&0b11) << 8);"
 			        RubimCode::Isolator.outside_binding = block.binding
 			        RubimCode::Isolator.run
-					yield(RubimCode::UserVariable.new("__rubim__volt", "int"))
+					yield(RubimCode::UserVariable.new("__rubim__volt", "tmp_int"))
 			        RubimCode::Isolator.stop
 				RubimCode.level -= 1
 				RubimCode.pout ("}")

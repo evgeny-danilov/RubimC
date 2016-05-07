@@ -51,8 +51,8 @@ To install *avr-gcc* use this [manual] (http://avr-eclipse.sourceforge.net/wiki/
 3. Fix a lot of possible bugs & features
 
 ### What is done now
-1. Initialize integer variables
-2. Support all arithmetic operation except ternary and logical operators (binary operators is done)
+1. Initialize variables (now only integer)
+2. Support most of ruby operators (arithmetic, unary, comparison, binary)
 3. Support conditions (if/unless with return values and it modify version)
 4. Suppotr loops (while/until and it modify version) except next/redo/break/retry keywords
 4. Support arrays init and arithmetic operation with it (sorry, didn`t it)
