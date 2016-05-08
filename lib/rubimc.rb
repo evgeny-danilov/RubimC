@@ -102,7 +102,9 @@ class RubimCode
 		def >>(val); common_operator(val, __method__); end
 
 		# Logical Operators: (and, or, not, &&, ||)
-		# can not override, use preprocessor
+		def _and(val); common_operator(val, "&&"); end
+		def _or(val); common_operator(val, "||"); end
+		# Note: operator 'not' replaced to "!" (very bug)
 
 		# Ternary Operators: (? :)
 		# ToDo...
@@ -119,6 +121,7 @@ class RubimCode
 
 		# Range-operators ".." and "..."
 		# ToDo: is it need? or use Enumerator?
+
 
 		def times
 			n = LoopCounter.new

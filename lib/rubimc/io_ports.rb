@@ -64,15 +64,15 @@ class RubimCode
 
 
 		def on
-			RubimCode.pout(RubimCode.rubim_sbit("PORT#{port}", "#{pin}") + " /*#{self.name}.#{__method__}*/")
+			RubimCode.pout(RubimCode.rubim_sbit("PORT#{port}", "#{pin}"))
 		end
 
 		def off
-			RubimCode.pout(RubimCode.rubim_cbit("PORT#{port}", "#{pin}") + " /*#{self.name}.#{__method__}*/")
+			RubimCode.pout(RubimCode.rubim_cbit("PORT#{port}", "#{pin}"))
 		end
 
 		def toggle
-			RubimCode.pout(RubimCode.rubim_tbit("PORT#{port}", "#{pin}") + " /*#{self.name}.#{__method__}*/")
+			RubimCode.pout(RubimCode.rubim_tbit("PORT#{port}", "#{pin}"))
 		end
 	end # end UserInput class
 
@@ -84,11 +84,11 @@ class RubimCode
 
 
 		def hi?
-			"bit_is_set(PORT#{port}, #{pin})" + " /*#{self.name}.#{__method__}*/"
+			RubimCode::UserVariable.new("bit_is_set(PORT#{port}, #{pin})", "expression")
 		end
 
 		def low?
-			"bit_is_clear(PORT#{port}, #{pin})" + " /*#{self.name}.#{__method__}*/"
+			RubimCode::UserVariable.new("bit_is_clear(PORT#{port}, #{pin})", "expression")
 		end
 	end # end UserOutput class
 

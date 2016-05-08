@@ -1,4 +1,6 @@
-require_relative 'lib/version.rb'
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'version.rb'
 
 Gem::Specification.new do |s|
   s.name        = 'rubimc'
@@ -8,25 +10,14 @@ Gem::Specification.new do |s|
   s.description = "Ruby compiler and framework for microcontrollers like AVR, PIC & STM. It was designed to simplify the process of programming microcontrollers, but can also be used as an clear С-code generator that can be compiled with gcc"
   s.authors     = ["Evgeny Danilov"]
   s.email       = 'jmelkor@rambler.ru'
-  s.files       = ["README.md", "LICENSE.md", 
-                      "lib/rubimc.rb", 
-                      "lib/version.rb",
-                      "lib/rubimc/preprocessor.rb",
-                      "lib/rubimc/printer.rb",
-                      "lib/rubimc/init_var.rb",
-                      "lib/rubimc/io_ports.rb",
-                      "lib/rubimc/control_structures.rb",
-                      "lib/rubimc/ruby_classes.rb",
-                      "lib/rubimc/controllers.rb",
-                      "lib/rubimc/mcu/avr/avr_controller.rb",
-                      "lib/rubimc/mcu/avr/attiny13.rb",
-
-                      "bin/rubimc"
-                    ]
   s.homepage    = 'https://github.com/jmelkor/RubimC'
   s.license     = 'MIT'
 
+  s.files = `git ls-files`.split($/)
+  s.executables   = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  s.test_files    = s.files.grep(%r{^(test|spec|features)/})
+  s.require_paths = ["lib"]
 
-  s.default_executable = %q{rubimc}
-  s.executables << "rubimc"
+  # s.add_dependency 'superators19', '~> 0'
+  # s.add_development_dependency 'rspec', '~> 0'
 end

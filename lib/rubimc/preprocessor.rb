@@ -126,7 +126,7 @@ class RubimRipper
     	source.gsub(/;RubimCode.rubim_tmpif/, 'if')
     end
 
-    def self.replace_boolean_kw(source)
+    def self.replace_true_false_kw(source)
     	source = replace_keywords(source, "true", "RubimCode::UserVariable.new(true, 'fixed')")
     	source = replace_keywords(source, "false", "RubimCode::UserVariable.new(false, 'fixed')")
     	return source
@@ -173,6 +173,15 @@ class RubimRipper
 		source = replace_keywords(source, "next", "RubimCode.rubim_next")
 		source = replace_keywords(source, "break", "RubimCode.rubim_break")
 		return source
+    end
+
+    def self.replace_and_or_not_kw(source)
+		source = replace_keywords(source, "not", "!")
+		source = replace_keywords(source, "and", "._and")
+		source = replace_keywords(source, "&&", "._and")
+		source = replace_keywords(source, "or", "._or")
+		source = replace_keywords(source, "||", "._or")
+		return source    	
     end
 
 	#########################
@@ -222,6 +231,8 @@ class RubimRipper
 	    	lexs.reverse_each do |lex|
 	            kw_pos, ident, symb = lex
 	            if (ident == :on_kw and symb == kw)
+	            	source = replace_words(source, symb, repl_kw, kw_pos)
+	            elsif (ident == :on_op and kw.in? ['&&','||'] and symb == kw)
 	            	source = replace_words(source, symb, repl_kw, kw_pos)
 	            end
 	    	end
@@ -300,10 +311,12 @@ class PreProcessor
 	def self.execute(str)
 		@@program = str
 		
+
 		# Последовательность очень важна - не нарушать!
 		@@program = RubimRipper.replace_assing_operators(@@program)
 		@@program = RubimRipper.replace_all_numeric(@@program)
 		@@program = RubimRipper.replace_then_else_elsif_kw(@@program)
+		@@program = RubimRipper.replace_and_or_not_kw(@@program) 
 
 		@@program = RubimRipper.replace_modify_express(@@program, "if")
 		@@program = RubimRipper.replace_modify_express(@@program, "unless")
@@ -319,8 +332,8 @@ class PreProcessor
 		@@program = RubimRipper.replace_rubim_tmpif(@@program)
 
 		@@program = RubimRipper.add_binding_to_init(@@program)
-		@@program = RubimRipper.replace_instructions(@@program) # next/break
-		@@program = RubimRipper.replace_boolean_kw(@@program) # true/false
+		@@program = RubimRipper.replace_instructions(@@program) # now only next/break
+		@@program = RubimRipper.replace_true_false_kw(@@program)
 	end 
 
 

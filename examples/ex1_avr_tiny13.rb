@@ -8,7 +8,7 @@ require 'rubimc'
 
 class FirstController < AVR_attiny13
     def initialize
-        bool :@global_test
+        boolean :@global_test
         @global_test = true
 
         output :@led, port: :B, pin: 3
@@ -23,7 +23,7 @@ class FirstController < AVR_attiny13
     end
 
     def main_loop # # infinit loop, it stop only when IC is reset
-        @led.toggle if @button.hi? 
+        @led.toggle if (not @button.hi?) || @global_test
         @led.off if @global_test
     end
 end

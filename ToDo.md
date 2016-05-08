@@ -1,4 +1,5 @@
 List of small tasks:
+1. realise logical operations: and/or/not/&&/||
 1. try to delete kw "END" from RubimCode::Printer (modify script "bin/rubimc")
 2. output/input - init vars like in method :integer
 1. Test core with command "rubimc test"
