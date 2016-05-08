@@ -45,9 +45,12 @@ class RubimCode
 		attr_accessor :name, :port, :pin, :type
 
 		def initialize(name, port: nil, pin: nil, type: "normal")
+			# ToDo: check type of params:
+			# name, port - only symbol
+			# pin - only UserVariable with type 'fixed' (feature: pin can receive also instance vars: @pin_num)
+			# type - only 'normal' (feature: realize 'tri-state' type)
 			@name = name.to_s
-			@port = port.to_s if port.is_a? Symbol or port.is_a? String
-			@port = port.name if port.is_a? UserVariable
+			@port = port.to_s
 			@pin = pin.name.to_s
 			@type = type.to_s
 		end
@@ -85,7 +88,7 @@ class RubimCode
 		end
 
 		def low?
-			"bit_is_clear(#{port}, #{pin})"
+			"bit_is_clear(PORT#{port}, #{pin})"
 		end
 	end # end UserOutput class
 

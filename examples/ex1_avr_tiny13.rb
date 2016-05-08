@@ -8,23 +8,22 @@ require 'rubimc'
 
 class FirstController < AVR_attiny13
     def initialize
-        integer :@viar
-        @viar = 12
+        bool :@global_test
+        @global_test = true
 
-        output :@led, port: 'B', pin: 3
-        input :@button, port: :B, pin: @viar
+        output :@led, port: :B, pin: 3
+        input :@button, port: :B, pin: 1
 
         ANALOG_TO_DIGITAL.init(ref: "vcc", channel: ADC0)
 
         ANALOG_TO_DIGITAL.interrupt(enabled: true) do |volts|
             @led.off if volts < 30
-            @led.on if volts >= 220
+            @led.on if @button.low?
         end
     end
 
     def main_loop # # infinit loop, it stop only when IC is reset
-        integer :qwe
-        qwe = @viar
-        @led.toggle if @button.hi?
+        @led.toggle if @button.hi? 
+        @led.off if @global_test
     end
 end
