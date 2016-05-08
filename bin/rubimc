@@ -186,9 +186,10 @@ elsif exec_type == 'compile'
 
 # Development mode
 elsif exec_type == "dev_compile"
+	require "#{gem_dir}/lib/version.rb"
 	puts "development mode"
 	sh "gem build rubimc.gemspec"
-	sh "gem install rubimc-0.2.1.gem"
+	sh "gem install rubimc-#{RubimCode::VERSION}.gem"
 	sh "rubimc compile #{ARGV[1]}"
 
 else
