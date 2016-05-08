@@ -59,36 +59,36 @@ class RubimCode
 	class UserOutput < UserIO
 		def initialize(name, port: nil, pin: nil, type: "normal")
 			super
-			RubimCode.pout(RubimCode.rubim_sbit("DDR#{port}", "#{pin}"))
+			RubimCode.pout(RubimCode.rubim_sbit("DDR#{port}", "#{pin}") + " /* #{self.name} configure as output */ ")
 		end
 
 
 		def on
-			RubimCode.pout(RubimCode.rubim_sbit("PORT#{port}", "#{pin}"))
+			RubimCode.pout(RubimCode.rubim_sbit("PORT#{port}", "#{pin}") + " /*#{self.name}.#{__method__}*/")
 		end
 
 		def off
-			RubimCode.pout(RubimCode.rubim_cbit("PORT#{port}", "#{pin}"))
+			RubimCode.pout(RubimCode.rubim_cbit("PORT#{port}", "#{pin}") + " /*#{self.name}.#{__method__}*/")
 		end
 
 		def toggle
-			RubimCode.pout(RubimCode.rubim_tbit("PORT#{port}", "#{pin}"))
+			RubimCode.pout(RubimCode.rubim_tbit("PORT#{port}", "#{pin}") + " /*#{self.name}.#{__method__}*/")
 		end
 	end # end UserInput class
 
 	class UserInput < UserIO
 		def initialize(name, port: nil, pin: nil, type: "normal")
 			super
-			RubimCode.pout(RubimCode.rubim_cbit("DDR#{port}", "#{pin}"))
+			RubimCode.pout(RubimCode.rubim_cbit("DDR#{port}", "#{pin}") + " /* #{self.name} configure as output */ ")
 		end
 
 
 		def hi?
-			"bit_is_set(PORT#{port}, #{pin})"
+			"bit_is_set(PORT#{port}, #{pin})" + " /*#{self.name}.#{__method__}*/"
 		end
 
 		def low?
-			"bit_is_clear(PORT#{port}, #{pin})"
+			"bit_is_clear(PORT#{port}, #{pin})" + " /*#{self.name}.#{__method__}*/"
 		end
 	end # end UserOutput class
 
