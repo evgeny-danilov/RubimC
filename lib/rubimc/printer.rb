@@ -159,7 +159,9 @@ class RubimCode::Printer
 	def self.print_instance_vars
 		RubimCode::Printer.pout_destination = :h_file
 		@@instance_vars_cc.each do |var|
-			RubimCode.pout "#{var.type} #{var.name};"
+			if var.is_a? RubimCode::UserVariable
+				RubimCode.pout "#{var.type} #{var.name};"
+			end
 		end
 		RubimCode::Printer.pout_destination = :default
 	end

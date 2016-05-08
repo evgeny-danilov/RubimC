@@ -2,7 +2,9 @@
 # Initialize user`s variables										#
 #####################################################################
 
-def RubimCode.init_vars(type_cc, *variables) # variables - набор инициализируемых переменных
+# type_cc - тип переменной в С-программе
+# variables - набор инициализируемых переменных
+def RubimCode.init_vars(type_cc, *variables) 
 	vars_cc = ""
 	rubim_vars = []
 

@@ -114,7 +114,7 @@ elsif exec_type == 'compile'
 		end
 
 		# === check syntax of user program ===
-		print "Check syntax..."
+		print "  Check syntax..."
 		sh "ruby -c '#{input_file}'", verbose: false do |ok, res|
 			exit 1 unless ok # check exit status after command runs
 		end
@@ -134,7 +134,7 @@ elsif exec_type == 'compile'
 		Dir.mkdir("#{release_folder}/") unless Dir.exists?("#{release_folder}/")
 
 		# === preprocessing user`s program ===
-		print "preprocessing file \"#{basename}.rb\"..."
+		print "  preprocessing file \"#{basename}.rb\"..."
 		require 'rubimc/preprocessor'
 		PreProcessor.write_in_file(input_file, dirname, basename, "#{outfile}.rb")
 		print "done\n"
@@ -151,7 +151,7 @@ elsif exec_type == 'compile'
 		mcu_type = RubimCode::Printer.mcu_type
 
 		# === execute preprocessing program, generate C code ===
-		puts "generate C code"
+		puts "  generate C code"
 		sh "ruby '#{outfile}.rb' '#{outfile}'.c", verbose: false do |ok, res|
 			exit 1 unless ok # check exit status after command runs
 		end
@@ -160,7 +160,7 @@ elsif exec_type == 'compile'
 		# === compile C code to object-code and link to hex/exe ===
 		# ToDo: add DF_CPU (is it need?)
 		if code_type == "avr-gcc"
-			print "compile and link..."
+			print "  compile and link..."
 			sh "avr-gcc -std=c99 -Os -mmcu=#{mcu_type} -c '#{outfile}.c' -o '#{outfile}.o'", verbose: false do |ok, res|
 				exit 1 unless ok # check exit status after command runs
 			end
@@ -171,7 +171,7 @@ elsif exec_type == 'compile'
 			puts "done"
 
 		elsif code_type == "gcc"
-			print "compile and link..."
+			print "  compile and link..."
 			sh "gcc  -std=c99 -o '#{outfile}.out' '#{outfile}.c'", verbose: false do |ok, res|
 				exit 1 unless ok # check exit status after command runs
 			end

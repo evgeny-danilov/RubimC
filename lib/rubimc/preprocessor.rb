@@ -133,12 +133,16 @@ class RubimRipper
     end
 
     def self.add_binding_to_init(source) # for initialize variables with methods 'integer', 'float', e.t.
+		helpers_array = ["boolean", "bool", "integer", "int", "float", "double"]
+		helpers_array += ["string"]
+		helpers_array += ["output", "input"]
+
 		sexp = Ripper.sexp(source)
 		command_array = find_rec(sexp, :command)
 		command_array.reverse_each do |elem|
 			varies_name = []
 			symb, helper_name, helper_pos = elem[1]
-			if helper_name.in? ["boolean", "bool", "integer", "int", "float", "double","string"] # if one of helper methods
+			if helper_name.in? helpers_array # if one of helper methods
 				args_add_block = find_rec(elem, :args_add_block)[0][1]
 				args_add_block.each do |arg|
 					if arg[0] == :symbol_literal
@@ -157,6 +161,7 @@ class RubimRipper
 						raise ArgumentError.new("Wrong arguments for helper '#{helper_name}'") 
 					end
 				end
+				varies_name = [varies_name[0]] if helper_name.in? ['output', 'input']
 				var_str = varies_name.join(', ') # list of vars, defined in helper method
 				source = paste_before_pos(source, "#{var_str} = ", helper_pos) # paste vars before helper method
 			end

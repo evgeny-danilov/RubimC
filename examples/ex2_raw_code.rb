@@ -22,13 +22,14 @@ def main(argv)
 	integer :b
 	boolean :c
 	double :u1
-	b = 1; c = false
-	u1 = b + c*b + (2*b) + 3
+	b = 1; 
+	c = false
+	u1 = b*b + (2*b) + (b + 3)
 
 	# some conditions example
-	if b
-		if c==u1
-			b = c + 27
+	if b > 0
+		if u1 == c
+			b = 27 & c
 			u1 = 33 if b!= c
 		end 
 	end
