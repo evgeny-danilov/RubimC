@@ -17,9 +17,7 @@
 	8. Добавление предка к пользовательским классам
 	9. Замена return на __rubim_return
 	10. Сохранить все пользовательские комментарии в генерируемом коде
-	11. Цикл for - хз-чо делать...
-
-
+	11. Цикл "for" - хз-чо делать...
 =end
 
 class Object
@@ -31,6 +29,7 @@ end
 
 require 'ripper'
 class RubimRipper
+
 	# 1. (готово) замена оператора присваивания: "=" на ".c_assign="
     def self.replace_assing_operators(source)
     	lexs = Ripper.lex(source)
@@ -132,6 +131,8 @@ class RubimRipper
     	return source
     end
 
+    # For initialize variables
+    # ex: 'integer :var' convert to 'var = integer :var'
     def self.add_binding_to_init(source) # for initialize variables with methods 'integer', 'float', e.t.
 		helpers_array = ["boolean", "bool", "integer", "int", "float", "double"]
 		helpers_array += ["string"]
@@ -169,12 +170,14 @@ class RubimRipper
 		return source
     end
 
+	# replace control instructions in loops
     def self.replace_instructions(source)
 		source = replace_keywords(source, "next", "RubimCode.rubim_next")
 		source = replace_keywords(source, "break", "RubimCode.rubim_break")
 		return source
     end
 
+	# Replace all logical operators
     def self.replace_and_or_not_kw(source)
 		source = replace_keywords(source, "not", "!")
 		source = replace_keywords(source, "and", "._and")
@@ -187,7 +190,7 @@ class RubimRipper
 	#########################
     # === PRIVATE SECTION ===
     #########################
-    private
+    # private # fuck it, class method cann`t define as private in such way
 	    # Поиск вложенного массива (sexp) с ключевым символом find_sym (рекурсивный вызов)
 	    def self.find_rec(array, find_sym)
 	        return [] unless array.is_a? Array
@@ -300,47 +303,44 @@ class RubimRipper
 	    	return [lcount, source.lines[lcount-1].length]
 	    end
 
-end # class RubimRipper
+end # end RubimRipper class
 
 class PreProcessor
-	@@program = ""
-
-	def self.program; @@program; end
-	def self.program=(str); @@program = str; end
+	class << self
+		attr_accessor :program
+	end
+	@program = ""
 
 	def self.execute(str)
-		@@program = str
-		
+		@program = str
 
 		# Последовательность очень важна - не нарушать!
-		@@program = RubimRipper.replace_assing_operators(@@program)
-		@@program = RubimRipper.replace_all_numeric(@@program)
-		@@program = RubimRipper.replace_then_else_elsif_kw(@@program)
-		@@program = RubimRipper.replace_and_or_not_kw(@@program) 
+		@program = RubimRipper.replace_assing_operators(@program)
+		@program = RubimRipper.replace_all_numeric(@program)
+		@program = RubimRipper.replace_then_else_elsif_kw(@program)
+		@program = RubimRipper.replace_and_or_not_kw(@program) 
 
-		@@program = RubimRipper.replace_modify_express(@@program, "if")
-		@@program = RubimRipper.replace_modify_express(@@program, "unless")
-		@@program = RubimRipper.replace_modify_express(@@program, "while")
-		@@program = RubimRipper.replace_modify_express(@@program, "until")
+		@program = RubimRipper.replace_modify_express(@program, "if")
+		@program = RubimRipper.replace_modify_express(@program, "unless")
+		@program = RubimRipper.replace_modify_express(@program, "while")
+		@program = RubimRipper.replace_modify_express(@program, "until")
 
-		@@program = RubimRipper.replace_flat_express(@@program, "if")
-		@@program = RubimRipper.replace_flat_express(@@program, "unless")
-		@@program = RubimRipper.replace_flat_express(@@program, "while")
-		@@program = RubimRipper.replace_flat_express(@@program, "until")
+		@program = RubimRipper.replace_flat_express(@program, "if")
+		@program = RubimRipper.replace_flat_express(@program, "unless")
+		@program = RubimRipper.replace_flat_express(@program, "while")
+		@program = RubimRipper.replace_flat_express(@program, "until")
 
-		@@program = RubimRipper.replace_loop(@@program)
-		@@program = RubimRipper.replace_rubim_tmpif(@@program)
+		@program = RubimRipper.replace_loop(@program)
+		@program = RubimRipper.replace_rubim_tmpif(@program)
 
-		@@program = RubimRipper.add_binding_to_init(@@program)
-		@@program = RubimRipper.replace_instructions(@@program) # now only next/break
-		@@program = RubimRipper.replace_true_false_kw(@@program)
+		@program = RubimRipper.add_binding_to_init(@program)
+		@program = RubimRipper.replace_instructions(@program) # now only next/break
+		@program = RubimRipper.replace_true_false_kw(@program)
 	end 
 
-
-	# write preprocessing program in file
-	def self.write_in_file(input_file, dirname, basename, outfile)
-		PreProcessor.execute( File.read(input_file) )
+	# Write preprocessing program in file
+	def self.write_in_file(infile, outfile)
+		PreProcessor.execute( File.read(infile) )
 		File.write("#{outfile}", PreProcessor.program)
 	end
-
-end
+end # end PreProcessor class

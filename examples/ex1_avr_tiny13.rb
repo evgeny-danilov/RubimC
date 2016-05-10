@@ -6,6 +6,10 @@
 
 require 'rubimc'
 
+require 'byebug'
+require 'rubimc/preprocessor'
+
+
 class FirstController < AVR_attiny13
     def initialize
         boolean :@global_test
@@ -19,6 +23,7 @@ class FirstController < AVR_attiny13
         ANALOG_TO_DIGITAL.interrupt(enabled: true) do |volts|
             @led.off if volts < 30
             @led.on if @button.low?
+            @global_test = !@global_test
         end
     end
 

@@ -14,7 +14,7 @@
 require 'rake' 
 
 gem_dir = File.expand_path("..", File.dirname(__FILE__))
-$LOAD_PATH.unshift gem_dir # Look in gem directory for resources first
+$LOAD_PATH.unshift "#{gem_dir}/lib" # Look in gem directory for resources first
 
 exec_type = ARGV[0]
 if exec_type == 'generate' or exec_type == 'g'
@@ -135,27 +135,35 @@ elsif exec_type == 'compile'
 
 		# === preprocessing user`s program ===
 		print "  preprocessing file \"#{basename}.rb\"..."
-		require 'rubimc/preprocessor'
-		PreProcessor.write_in_file(input_file, dirname, basename, "#{outfile}.rb")
+		require "rubimc/preprocessor"
+		PreProcessor.write_in_file(input_file, "#{outfile}.rb")
 		print "done\n"
 
-		# === check type: gcc/avr-gcc
+		Object.send(:remove_const, :PreProcessor)
+		Object.send(:remove_const, :RubimRipper)
+		Object.send(:remove_const, :Ripper)
+
+		# === execute preprocessing program, generate C code ===
+		puts "  generate C code"
+		ARGV[0] = "#{outfile}"
 		require "#{outfile}.rb"
 		unless defined? RubimCode
 			puts "ERROR: file '#{outfile}.rb' is not rubimc program"
 			exit 1
 		end
-		RubimCode::Printer.sandbox = true
 		RubimCode::Printer.generate_cc
+		puts "done"
+
+		# === old version of generator ===
+		# puts "  generate C code"
+		# sh "ruby '#{outfile}.rb' '#{outfile}'.c", verbose: false do |ok, res|
+		# 	exit 1 unless ok # check exit status after command runs
+		# end
+		# puts "done"
+
+		# === check type: gcc/avr-gcc ===
 		code_type = RubimCode::Printer.code_type
 		mcu_type = RubimCode::Printer.mcu_type
-
-		# === execute preprocessing program, generate C code ===
-		puts "  generate C code"
-		sh "ruby '#{outfile}.rb' '#{outfile}'.c", verbose: false do |ok, res|
-			exit 1 unless ok # check exit status after command runs
-		end
-		puts "done"
 
 		# === compile C code to object-code and link to hex/exe ===
 		# ToDo: add DF_CPU (is it need?)
@@ -185,12 +193,13 @@ elsif exec_type == 'compile'
 	end
 
 # Development mode
-elsif exec_type == "dev_compile"
-	require "#{gem_dir}/lib/version.rb"
-	puts "development mode"
+elsif exec_type == "gem_compile"
+	require 'version'
+	puts
+	puts "=== development mode === "
 	sh "gem build rubimc.gemspec"
 	sh "gem install rubimc-#{RubimCode::VERSION}.gem"
-	sh "rubimc compile #{ARGV[1]}"
+	sh "rubimc compile #{ARGV[1]}" if ARGV[1]
 
 else
 	puts "ERROR: unknown command for rubimc"

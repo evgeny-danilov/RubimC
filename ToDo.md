@@ -1,8 +1,8 @@
 List of small tasks:
-1. realise logical operations: and/or/not/&&/||
-1. try to delete kw "END" from RubimCode::Printer (modify script "bin/rubimc")
-2. output/input - init vars like in method :integer
-1. Test core with command "rubimc test"
+0. Set private and protected methods for all RubimCode 
+1. realise logical operations: write tests
+2. preprocessor: for correct priority of logical operators wrap all 'not' operators: "!true" => "(!true)"; "not false" => "(not false)"
+3. Test core with command "rubimc test"
 5. Реализация пользовательских методов def()
 6. __rubim__rval#{level}- добавить название метода: 
     __rubim__#{method}rval#{level}

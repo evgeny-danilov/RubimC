@@ -9,7 +9,7 @@ class AVR_attiny13 < AVRController
 		end
 
 		def mcu_layout 
-			# ToDo: set F_CPU from user programm
+			# ToDo: set F_CPU from user program
 			RubimCode.pout "#define __AVR_ATtiny13__ 1" 
 			RubimCode.pout "#define F_CPU 1000000UL" # Microcontroller frequency (Hz)
 			RubimCode.pout "#include <avr/io.h>"

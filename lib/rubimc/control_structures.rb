@@ -1,5 +1,4 @@
-class RubimCode
-class << self
+class << RubimCode
 
 	@@rubim_defined_values = []
 
@@ -27,6 +26,7 @@ class << self
 		@level -= 1
 		return RubimCode::UserVariable.new("__rubim__rval#{@level}", 'tmp_int')
 	end
+	RubimCode.private_class_method :rubim_cond
 
 	# instructions "while" & "until"
 	def rubim_cycle(type="while", cond="true", &block)
@@ -36,6 +36,7 @@ class << self
 			pout "}"
 		@level-=1
 	end
+	RubimCode.private_class_method :rubim_cycle
 
 	# flat instructions
 	def rubim_if(cond, &block); rubim_cond(cond, "if", &block); end
@@ -61,5 +62,4 @@ class << self
 	def rubim_next; pout "continue;" end
 	def rubim_break; pout "break;" end
 
-end # class << self
-end # RubimCode class
+end # end class << RubimClass

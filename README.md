@@ -17,8 +17,7 @@ First of all for fan...I want to see at Ruby from other point, not only from fam
 
 ### How it`s work
 Code generated in three stage:
-
-1. Preprocessing user programm, that replaced some Ruby keywords, operators and identificators
+1. Preprocessing user program, that replaced some Ruby keywords, operators and identificators
 2. Shell Ruby-code and generate C-code (use metaprograming of Ruby)
 3. Compile C-code (with gcc or avr-gcc).
 
@@ -38,27 +37,26 @@ To install *avr-gcc* use this [manual] (http://avr-eclipse.sourceforge.net/wiki/
 
 
 ### ToDo list (main of them):
-1. Validate code before preprocessing
 1. Support C-libraries
-1. Code generator:
-    + define user`s variables as local (now it defined in top-level instance)
-    + support all C types of variables (int ,float, unsigned int, u_int8 e.t.)
-    + check match types (in assign and operations) and try to cast
+2. Code generator:
+    + support all C types of variables (unsigned int, short, u_int8, e.t.)
+    + check match types (in assign and operations) and try to cast values
     + support array, hash, string, range and constants (as full as possible)
     + support user`s methods and classes
     + support threads
-2. Write libraries for microcontrollers (AVR, PIC, STM, e.t.)
-3. Fix a lot of possible bugs & features
+3. Debug mode (it`s very big task, but I sure it possible using gems like byebug and gdb/avr-gdb servers)
+4. Write libraries for microcontrollers (AVR, PIC, STM, e.t.)
+5. Fix a lot of possible bugs & features
 
 ### What is done now
 1. Initialize variables (supported types: bool,int,float,double)
-2. Support most of ruby operators: arithmetic, unary, comparison, binary, logical (but 'not' is sometimes bug...)
+2. Support most of ruby operators: arithmetic, unary, comparison, binary, logical (operator 'not' is sometimes bug, use brackets)
 3. Support conditions if/unless (with return values) and it modify version
 4. Support loops while/until and it modify version (except redo/retry instruction)
 5. Realize example library for AVR AtTiny13 MCU with DigitalIO and ADC support
 
 ### Example for AVR microcontroller:
-Ruby programm (*"FirstController.rb"*):
+Ruby program (*"FirstController.rb"*):
 ```ruby
 require 'rubimc'
 
