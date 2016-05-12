@@ -40,23 +40,15 @@ class RubimCode
 			RubimCode.pout "#{self.name} = #{val};"
 		end
 
-		# All ruby operators must execute this method
-		private
-			def common_operator(val, operator_sym, **options)
-				if not val.class.respond_to? :to_s
-					RubimCode.perror "Conversion of variable #{val} is impossible. Method 'to_s' not found"
-				else 
-					if options[:unary]
-						RubimCode::Isolator.permit!(self)
-						UserVariable.new(operator_sym.to_s[0] + self.name, 'expression')
-					else
-						RubimCode::Isolator.permit!(self)
-						RubimCode::Isolator.permit!(val)
-						UserVariable.new(self.name + operator_sym.to_s + val.to_s, 'expression')
-					end
-				end
-			end
-		public
+		# Generate "for(;;)" loop
+		def times
+			n = LoopCounter.new
+			RubimCode.pout ("for (int #{n}=0; #{n}<#{self}; #{n}++) {")
+			RubimCode.level += 1
+			yield(n)
+			RubimCode.pout ("}")
+			RubimCode.level -= 1
+		end
 
 		# Arithmetic Operators:
 		def +(val);	common_operator(val, __method__); end
@@ -112,15 +104,22 @@ class RubimCode
 		# ToDo: add mixins Enumerable and Comparable
 		# ToDo: is it need? or use Enumerator?
 
-		# Generate "for(;;)" loop
-		def times
-			n = LoopCounter.new
-			RubimCode.pout ("for (int #{n}=0; #{n}<#{self}; #{n}++) {")
-			RubimCode.level += 1
-			yield(n)
-			RubimCode.pout ("}")
-			RubimCode.level -= 1
-		end
+		# All ruby operators must execute this method
+		private
+			def common_operator(val, operator_sym, **options)
+				if not val.class.respond_to? :to_s
+					RubimCode.perror "Conversion of variable #{val} is impossible. Method 'to_s' not found"
+				else 
+					if options[:unary]
+						RubimCode::Isolator.permit!(self)
+						UserVariable.new(operator_sym.to_s[0] + self.name, 'expression')
+					else
+						RubimCode::Isolator.permit!(self)
+						RubimCode::Isolator.permit!(val)
+						UserVariable.new(self.name + operator_sym.to_s + val.to_s, 'expression')
+					end
+				end
+			end
 	end # end UserVariable class
 
 	# ToDo: в Ruby присваивание значений индексной переменной 
@@ -177,8 +176,9 @@ class RubimCode
 			return unless self.enabled
 			return unless self.outside_binding
 			return unless var.is_a? UserVariable
-			return if var.type.in? ["fixed", "expression", "undefined", nil]
-			return if var.type === /^tmp/
+			return unless var.type.in? RubimCode::C_TYPES
+			# return if var.type.in? ["fixed", "expression", "undefined", nil]
+			# return if var.type === /^tmp/
 
 			if !local_variables.include?(var.name) and 
 				outside_binding.local_variable_defined?(var.name.to_sym)

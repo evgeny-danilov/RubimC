@@ -39,7 +39,7 @@ class RubimCode
 		def rubim_sbit(var, bit); "#{var} |= 1<<#{bit};"; end
 		def rubim_cbit(var, bit); "#{var} &= ~(1<<#{bit});"; end
 		def rubim_tbit(var, bit); "#{var} ^= 1<<#{bit};"; end
-	end # class << self
+	end
 
 	class UserIO
 		attr_accessor :name, :port, :pin, :type
@@ -75,6 +75,7 @@ class RubimCode
 			RubimCode.pout(RubimCode.rubim_tbit("PORT#{port}", "#{pin}"))
 		end
 	end # end UserInput class
+
 
 	class UserInput < UserIO
 		def initialize(name, port: nil, pin: nil, type: "normal")

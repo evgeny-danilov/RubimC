@@ -1,6 +1,9 @@
 #####################################################################
 # Initialize user`s variables										#
 #####################################################################
+class RubimCode
+	C_TYPES = ['int', 'float', 'double', 'bool', 'short', 'char']
+end
 
 # type_cc - тип переменной в С-программе
 # variables - набор инициализируемых переменных
@@ -91,7 +94,7 @@ def array(var, with: {type: 'UserVariable', size: nil})
 	user_class = with[:type]
 	with[:type] = 'int' if with[:type] == 'integer'
 	with[:type] = 'bool' if with[:type] == 'boolean'
-	if (with[:type].in? ['bool','int','float','double','string']) 
+	if (with[:type].in? RubimCode::C_TYPES) 
 		user_class = "UserVariable"
 	end
 

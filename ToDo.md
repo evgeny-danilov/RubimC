@@ -1,5 +1,4 @@
 List of small tasks:
-0. Set private and protected methods for all RubimCode 
 1. realise logical operations: write tests
 2. preprocessor: for correct priority of logical operators wrap all 'not' operators: "!true" => "(!true)"; "not false" => "(not false)"
 3. Test core with command "rubimc test"

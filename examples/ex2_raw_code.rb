@@ -39,4 +39,8 @@ def main(argv)
 		next if i==2
 		printf("now 'i' value is %d\n", i)
 	end
+
+	# connect external library
+	ExternLibs.add("test_lib.h")
+	printf "External function return: %d\n", ExternLibs.eval("test_lib()")
 end

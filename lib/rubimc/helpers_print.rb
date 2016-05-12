@@ -18,7 +18,7 @@ end
 
 # Paste C-code direct in generated file without any changes 
 def cc_code(str)
-	pout "// generate with cc_code function"
-	pout str
-	pout "// end cc_code function"
+	RubimCode.pout "// generate with cc_code function"
+	RubimCode.pout str
+	RubimCode.pout "// end cc_code function"
 end

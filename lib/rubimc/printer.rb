@@ -1,18 +1,49 @@
-class RubimCode
-	class << self
-		attr_accessor :level
-	end
-	@level = 0
-end
-
 class << RubimCode
 
-	# Add line in generated file and print in console
+	# C-code shift (RubimC generate beauty and readable C-code)
+	attr_accessor :level
+	RubimCode.level = 0
+
+	# Alias for RubimCode::Printer.pout
 	def pout(str = "")
+		RubimCode::Printer.pout(str)
+	end
+
+	# Alias for RubimCode::Printer.perror
+	def perror(error_message)
+		RubimCode::Printer.perror(error_message)
+	end
+end
+
+class RubimCode::Printer
+
+	class << self
+		# List of varibles that must be defined in header file
+		attr_accessor :instance_vars_cc
+		RubimCode::Printer.instance_vars_cc = []
+
+		# Destination for 'pout' method
+		attr_accessor :pout_destination
+		def pout_destination=(dest)
+			if dest.nil?
+				RubimCode.perror "Wrong parameter for method #{__method__}. Set destination string"
+			elsif not (dest.is_a?(String) or dest.in? [:default, :h_file])
+				RubimCode.perror "Wrong parameter for method #{__method__}. Only string variable or symbols :default & :h_file values are permit as a parameters"
+			end
+			@pout_destination = dest
+		end
+		@pout_destination = :default
+	end
+
+
+	# Add line in generated file and print it in console,
+	# or and in string object (if it set in pout_destination)
+	# Public method
+	def self.pout(str = "")
 		if str.nil? or str.to_s.nil?
 			raise ArgumentError, "str is nil"
 		else
-			res_str = " "*4*@level + str.to_s 
+			res_str = " "*4*RubimCode.level + str.to_s 
 			if RubimCode::Printer.pout_destination.in? [:default, nil]
 				puts res_str
 				unless defined? TEST_MODE
@@ -29,7 +60,8 @@ class << RubimCode
 	end
 
 	# Show error message in console end exit
-	def perror(error_message)
+	# Public method
+	def self.perror(error_message)
 		if error_message.nil? or error_message.to_s.nil? 
 			raise ArgumentError, "error message is not string" 
 		end
@@ -45,32 +77,8 @@ class << RubimCode
 		exit 1
 	end
 
-end # RubimCode class
-
-
-class RubimCode::Printer
-	@@instance_vars_cc = []
-	def self.instance_vars_cc
-		@@instance_vars_cc
-	end
-
-	@@pout_destination = :default
-	def self.pout_destination
-		@@pout_destination
-	end
-	def self.pout_destination=(dest)
-		if dest.nil?
-			perror "Wrong parameter for method #{__method__}. Set destination string"
-		end
-
-		if dest.class.name == "String" or dest.in? [:default, :h_file] # dest.is_a?(String) not work...WTF
-			@@pout_destination = dest
-		else
-			perror "Wrong parameter for method #{__method__}. Only string variable or ':default' value is permit as a parameters"
-		end
-	end
-
 	# Detect type of code to compile
+	# Public method (also used in bin/rubim)
 	def self.code_type
 		if Controllers.all.any?
 			"avr-gcc" 
@@ -82,11 +90,14 @@ class RubimCode::Printer
 	end
 
 	# Detect name of MCU (used as parameter for avr-gcc compiler)
+	# Public method (also used in bin/rubim)
 	def self.mcu_type
 		code_type == "avr-gcc" ? Controllers.all.first::MCU_NAME : "undefined"
 	end
 
-	def self.print_layout(position, &mcu_layout)
+	# Print layout for .c and .h files
+	# Private method
+	def self.print_layout(position, &layout)
 		basename = File.basename(ARGV[0]) # base name of compiled file
 		if position == :before_main
 			RubimCode::Printer.pout_destination = :h_file
@@ -119,7 +130,10 @@ class RubimCode::Printer
 			RubimCode.pout "}"
 		end
 	end
+	self.private_class_method :print_layout
 
+	# Print infinite loop for MCUs
+	# Private method
 	def self.print_main_loop
 		RubimCode.pout
 		RubimCode.pout "// === Main Infinite Loop === //"
@@ -129,17 +143,24 @@ class RubimCode::Printer
 			RubimCode.level -= 1
 		RubimCode.pout"} // end main loop"
 	end
+	self.private_class_method :print_main_loop
 
+	# Print varibles defined as inctanse vars
+	# Print into header file
+	# Private method
 	def self.print_instance_vars
 		RubimCode::Printer.pout_destination = :h_file
-		@@instance_vars_cc.each do |var|
+		RubimCode::Printer.instance_vars_cc.each do |var|
 			if var.is_a? RubimCode::UserVariable
 				RubimCode.pout "#{var.type} #{var.name};"
 			end
 		end
 		RubimCode::Printer.pout_destination = :default
 	end
+	self.private_class_method :print_instance_vars
 
+	# Main method for generate all C-code
+	# Public method
 	def self.generate_cc
 		exit 0 if defined? TEST_MODE
 
@@ -150,13 +171,13 @@ class RubimCode::Printer
 		if self.code_type == "avr-gcc" # if compile program for MCU
 			Controllers.all.each do |mcu_class|
 				print_layout(:before_main) do
-					mcu_class.mcu_layout if mcu_class.respond_to? :mcu_layout
+					mcu_class.layout if mcu_class.respond_to? :layout
 				end
 				mcu = mcu_class.new # print initialize section
 				print_main_loop {mcu.main_loop} # print body of main loop
 				print_layout(:after_main) 
 				RubimCode::Interrupts.print()
-				RubimCode::Printer.print_instance_vars()
+				print_instance_vars()
 			end # each Controllers.all
 
 		elsif self.code_type == "gcc" # if compile clear-C program
@@ -175,35 +196,9 @@ class RubimCode::Printer
 		end
 
 		def [](index)
-			RubimCode::UserVariable.new("argv[#{index}]", "int")
+			RubimCode::UserVariable.new("argv[#{index}]", "char *")
 		end
 	end # end CC_ARGS class
 
 end # end RubimCode::Printer class
 
-class RubimCode
-
-	# Список аппаратных прерываний (содержит Си-код в текстовом виде)
-	class Interrupts
-		@@interrupt_array = []
-
-		def self.array
-			@@interrupt_array
-		end
-
-		def self.add(val)
-			if val.class.name == "String"
-				@@interrupt_array << val
-			else
-				RubimCode.perror "wrong params in method #{__method__}"
-			end
-		end
-
-		def self.print
-			@@interrupt_array.each do |interrupt_code|
-				RubimCode.pout interrupt_code
-				end
-		end
-	end # end Interrupts class
-	
-end # end RubimCode class

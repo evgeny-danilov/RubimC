@@ -144,7 +144,7 @@ elsif exec_type == 'compile'
 		Object.send(:remove_const, :Ripper)
 
 		# === execute preprocessing program, generate C code ===
-		puts "  generate C code"
+		puts "  generate C code..."
 		ARGV[0] = "#{outfile}"
 		require "#{outfile}.rb"
 		unless defined? RubimCode
@@ -152,7 +152,7 @@ elsif exec_type == 'compile'
 			exit 1
 		end
 		RubimCode::Printer.generate_cc
-		puts "done"
+		puts "  generate is done"
 
 		# === old version of generator ===
 		# puts "  generate C code"

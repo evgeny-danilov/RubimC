@@ -12,8 +12,10 @@ require "rubimc/ruby_objects"
 require "rubimc/variables"
 require "rubimc/user_classes"
 require "rubimc/control_structures"
+require "rubimc/extern_libs"
 
 require "rubimc/printer"
+require "rubimc/interrupts"
 
 require "rubimc/helpers_init"
 require "rubimc/helpers_print"

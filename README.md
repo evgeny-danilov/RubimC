@@ -1,8 +1,8 @@
 ### RubimC
-It is a Ruby compiler and framework for microcontrollers. Full name RubimCode in Russian transcription heard as "cut down the code". Current version is working but realizes far not all the features of Ruby. All realized features you can find in folder "examples"
+This is a Ruby compiler and framework for microcontrollers. Full name RubimCode in Russian transcription heard as "cut down the code". Current version is working but realizes far not all the features of Ruby. All realized features you can find in folder "examples"
 
 ### Description:
-RubimC designed to simplify the process of programming microcontrollers, but can also be used as an clear С-code generator. The framework is a syntax-flavored Ruby combines the unique features of the Ruby, adding and expanding the functions required for a specific area. At the input  generator takes the program to Ruby, and the output provides a pure C code, based on the user program and libraries that are connected to a select model of the microcontroller. All that is required to generate is installed ruby-interpreter. If it`s nessesary, for compile C-code you need installing compiler *gcc* or *avr-gcc* (for AVR microcontrollers)
+RubimC designed to simplify the process of programming microcontrollers, but can also be used as an clear С-code generator. The framework is a syntax-flavored Ruby combines the unique features of the Ruby, adding and expanding the functions required for a specific area. At the input  generator takes the program to Ruby, and the output provides a pure C code, based on the user program and libraries that are connected to a select model of the microcontroller. All you need to use RubimC gem is Ruby interpretator and gcc/avr-gcc compiler.
 
 ### Benefits of writing programs in RubymC 
 + increase development speed
@@ -13,12 +13,12 @@ RubimC designed to simplify the process of programming microcontrollers, but can
 + ability to get a list of the hardware for a particular version of the device, as well as a list of all methods and help them directly from the generator console, on the basis of libraries.
 
 ### Why?
-First of all for fan...I want to see at Ruby from other point, not only from famous framework Ruby On Rails. Of course, we have great project [mruby] (http://mruby.org/), that compile Ruby code, realized all common functions of Ruby and standart libraries, and supported by **Matz**. But...mruby generate a big-size code, and, as we know, microcontroller have very small memory. For example, for initialize only one array mruby generate binary file with size 1MB! At the other side RubimC generate code with minimal size, in most cases are not different from the similar size of, written on C. In addition, RubimC generator is clearness. You always can to see on generated C-code and to evaluate its performance and size.
+First of all for fan...I want to see at Ruby from other point, not only from famous framework Ruby On Rails. Of course, we have great project [mruby] (http://mruby.org/), that compile Ruby code, realized all common functions of Ruby and standart libraries, and supported by **Matz**. But...mruby generate a big-size code, and, as we know, microcontroller have very small memory. For example, for initialize only one array mruby generate binary file with size 1MB! At the other side RubimC generate code with minimal size, in most cases are not different from the similar size of code written on C. In addition, RubimC generator is clearness. You always can to see on generated C-code and to evaluate its performance and size.
 
 ### How it`s work
 Code generated in three stage:
 1. Preprocessing user program, that replaced some Ruby keywords, operators and identificators
-2. Shell Ruby-code and generate C-code (use metaprograming of Ruby)
+2. Shell Ruby-code and generate C-code (use metaprogramming of Ruby)
 3. Compile C-code (with gcc or avr-gcc).
 
 ### Install
@@ -37,16 +37,15 @@ To install *avr-gcc* use this [manual] (http://avr-eclipse.sourceforge.net/wiki/
 
 
 ### ToDo list (main of them):
-1. Support C-libraries
-2. Code generator:
+1. Code generator:
     + support all C types of variables (unsigned int, short, u_int8, e.t.)
     + check match types (in assign and operations) and try to cast values
     + support array, hash, string, range and constants (as full as possible)
     + support user`s methods and classes
     + support threads
-3. Debug mode (it`s very big task, but I sure it possible using gems like byebug and gdb/avr-gdb servers)
-4. Write libraries for microcontrollers (AVR, PIC, STM, e.t.)
-5. Fix a lot of possible bugs & features
+2. Debug mode (it`s very big task, but I sure it possible using gems like byebug and gdb/avr-gdb servers)
+3. Write libraries for microcontrollers (AVR, PIC, STM, e.t.)
+4. Fix a lot of possible bugs & features
 
 ### What is done now
 1. Initialize variables (supported types: bool,int,float,double)
