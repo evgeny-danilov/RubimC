@@ -1,3 +1,8 @@
+#####################################################################
+# Helpers for work with MCU input/output digital ports 
+#####################################################################
+
+# Common method for initialize variables with class UserInput/UserOutput
 def RubimCode.init_io(mcu_class, rb_type, var, port: nil, pin: nil, type: "normal")
 	if port.nil? or pin.nil?
 		RubimCode.perror "Необходимо указать порт и пин для выхода #{var}"
@@ -35,12 +40,15 @@ end
 
 
 class RubimCode
+
+	# Methods for direct bits of i/o ports
 	class << self
 		def rubim_sbit(var, bit); "#{var} |= 1<<#{bit};"; end
 		def rubim_cbit(var, bit); "#{var} &= ~(1<<#{bit});"; end
 		def rubim_tbit(var, bit); "#{var} ^= 1<<#{bit};"; end
 	end
 
+	# Parent for UserInput & UserOutput
 	class UserIO
 		attr_accessor :name, :port, :pin, :type
 
@@ -56,6 +64,7 @@ class RubimCode
 		end
 	end # end UserIO class
 
+	# Digital outputs (leds for exmaple)
 	class UserOutput < UserIO
 		def initialize(name, port: nil, pin: nil, type: "normal")
 			super
@@ -76,7 +85,7 @@ class RubimCode
 		end
 	end # end UserInput class
 
-
+	# Digital inputs (buttons for example)
 	class UserInput < UserIO
 		def initialize(name, port: nil, pin: nil, type: "normal")
 			super

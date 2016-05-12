@@ -1,12 +1,22 @@
 #####################################################################
-# Initialize user`s variables										#
+# Initialize user variables
+# 
+# RubimCode provide only static variables that mast be initialize
+# This file contains helpers for use it direct in user code
+# 
+# Example:
+# => integer :local_var
+# => float :@global_var
 #####################################################################
+
 class RubimCode
+	# Type of all available variables
 	C_TYPES = ['int', 'float', 'double', 'bool', 'short', 'char']
 end
 
-# type_cc - тип переменной в С-программе
-# variables - набор инициализируемых переменных
+# Common function, execute for initialize all type of variables
+# type_cc - type of variable in C-code
+# variables - list of variables for init
 def RubimCode.init_vars(type_cc, *variables) 
 	vars_cc = ""
 	rubim_vars = []
@@ -78,7 +88,7 @@ end
 # NOTE! When add NEW TYPES, modify preprocessor: method 'add_binding_to_init' #
 ###############################################################################
 
-
+# Work with arrays (not work at this moment)
 def array_of_integer(var, size: nil)
 	array(var, with: {type: :integer, size: size})
 end

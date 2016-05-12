@@ -10,6 +10,8 @@ require "version"
 require "rubimc/ruby_objects"
 
 require "rubimc/variables"
+require "rubimc/isolator"
+require "rubimc/arrays"
 require "rubimc/user_classes"
 require "rubimc/control_structures"
 require "rubimc/extern_libs"

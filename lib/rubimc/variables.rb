@@ -1,3 +1,7 @@
+#####################################################################
+# It contains classes UserVariable / LoopCounter
+#####################################################################
+
 class RubimCode
 
 	# Class of variables defined in user program
@@ -122,6 +126,7 @@ class RubimCode
 			end
 	end # end UserVariable class
 
+
 	# ToDo: в Ruby присваивание значений индексной переменной 
 	# не должно влиять на выполнение цикла
 	# например следующий цикл будет выполнен ровно 10 раз
@@ -138,63 +143,6 @@ class RubimCode
 		end
 	end # end LoopCounter class
 
-	class UserArray < Array
-		attr_accessor :name, :type
-
-		def []=(index, val)
-			RubimCode.pout "#{@name}[#{index.to_i}] = #{val.to_s};"
-		end
-
-		def [](index)
-			super index.to_i
-		end
-
-		def each
-			n = LoopCounter.new
-			RubimCode.pout "for (int #{n}=0; #{n}<#{self.size}; #{n}++) {"
-			RubimCode.level +=1
-			joy_name = self.name + "[#{n}]"
-			yield(self[0].class.new("#{joy_name}"))
-			RubimCode.level -=1
-			RubimCode.pout "}"
-		end
-	end # end UserArray class
-
-
-	# Isolator check and permit variables when need to isolate block
-	# For example, it`s run when execute block for fireware interrupts
-	# It`s done because in C interrupts executed in isolate scope
-	class Isolator
-		class << self
-			attr_accessor :outside_binding # binding outside of block
-			attr_accessor :local_variables # list of block-local variables
-			attr_accessor :enabled
-		end
-
-		# return true if "var" is block-local or instance variable
-		def self.permit!(var)
-			return unless self.enabled
-			return unless self.outside_binding
-			return unless var.is_a? UserVariable
-			return unless var.type.in? RubimCode::C_TYPES
-			# return if var.type.in? ["fixed", "expression", "undefined", nil]
-			# return if var.type === /^tmp/
-
-			if !local_variables.include?(var.name) and 
-				outside_binding.local_variable_defined?(var.name.to_sym)
-					RubimCode.perror "Undefined variable '#{var.name}'. To pass params in interruprts use instance variables: '@#{var.name}'"
-			end
-		end
-
-		def self.run
-	        self.local_variables = []
-			self.enabled = true
-		end
-
-		def self.stop
-			self.enabled = false
-		end
-	end # end Isolator class
 
 end 
 # === END class RubimCode === #

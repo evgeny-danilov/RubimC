@@ -1,3 +1,12 @@
+#####################################################################
+# All Ruby instruction in user code replaced with PreProcessor class
+#    to RubimC temporary methods
+# This file contain methods to handle this temp methods
+#    and puts C-version in output file
+#####################################################################
+
+# Control structures can return values that placed in temporary variables
+# For prevent name collision we used list of this variables
 class << RubimCode
 	attr_accessor :rubim_defined_values
 end
@@ -5,7 +14,6 @@ RubimCode.rubim_defined_values = []
 
 
 class << RubimCode
-
 	# generate instructions "if" & "unless"
 	def rubim_cond(cond, type="if", &block)
 		# ToDo: auto-define type of ret_value

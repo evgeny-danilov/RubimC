@@ -133,7 +133,7 @@ elsif exec_type == 'compile'
 		end
 		Dir.mkdir("#{release_folder}/") unless Dir.exists?("#{release_folder}/")
 
-		# === preprocessing user`s program ===
+		# === preprocessing user program ===
 		print "  preprocessing file \"#{basename}.rb\"..."
 		require "rubimc/preprocessor"
 		PreProcessor.write_in_file(input_file, "#{outfile}.rb")

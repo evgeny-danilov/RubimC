@@ -41,7 +41,7 @@ To install *avr-gcc* use this [manual] (http://avr-eclipse.sourceforge.net/wiki/
     + support all C types of variables (unsigned int, short, u_int8, e.t.)
     + check match types (in assign and operations) and try to cast values
     + support array, hash, string, range and constants (as full as possible)
-    + support user`s methods and classes
+    + support user methods and classes
     + support threads
 2. Debug mode (it`s very big task, but I sure it possible using gems like byebug and gdb/avr-gdb servers)
 3. Write libraries for microcontrollers (AVR, PIC, STM, e.t.)
@@ -142,7 +142,7 @@ class BrainController < AVR_atmega16
         end
     end
 
-    private # define user`s methods and classes
+    private # define user methods and classes
         def want_to_say_hello?
             @button.press?
         end

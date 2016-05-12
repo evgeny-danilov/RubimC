@@ -1,6 +1,10 @@
+#####################################################################
+# Controllers is a parent for all MCUs series (AVR, PIC, e.t.)
+#####################################################################
+
 # ToDo: rename Controllers to MCUs
 class Controllers
-	def self.all # list of USER`s microcontrolles
+	def self.all # list of USER microcontrolles
 		@@controllers_array
 	end
 

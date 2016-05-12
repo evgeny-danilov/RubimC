@@ -1,3 +1,12 @@
+#####################################################################
+# RubimCode::Printer 
+# 
+# It content methods for print generated C-code
+#     in output files (.c & .h) and in console
+# Main method "generate_cc" call method for print layouts of code,
+#     execute user programm, and then print interrupts for MCUs
+#####################################################################
+
 class << RubimCode
 
 	# C-code shift (RubimC generate beauty and readable C-code)
@@ -37,7 +46,7 @@ class RubimCode::Printer
 
 
 	# Add line in generated file and print it in console,
-	# or and in string object (if it set in pout_destination)
+	# or in string object (if it set in pout_destination)
 	# Public method
 	def self.pout(str = "")
 		if str.nil? or str.to_s.nil?
@@ -183,7 +192,7 @@ class RubimCode::Printer
 		elsif self.code_type == "gcc" # if compile clear-C program
 			if Controllers.all.empty? and eval("self.private_methods.include? :main")
 				print_layout(:before_main)
-				eval("main(RubimCode::Printer::CC_ARGS.new)") # execute user`s method :main (CC_ARGS - helper for C agruments argc/argv)
+				eval("main(RubimCode::Printer::CC_ARGS.new)") # execute user method :main (CC_ARGS - helper for C agruments argc/argv)
 				print_layout(:after_main)
 			end
 		end

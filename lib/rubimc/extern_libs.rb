@@ -1,3 +1,11 @@
+#####################################################################
+# ExternLibs allow to include any C files							
+# 
+# Example:
+# => ExternLibs.add("test_lib.h")
+# => tmp_var = ExternLibs.eval("test_func()")
+#####################################################################
+
 class ExternLibs
 	# List of header files to include in generate C-code
 	@@lib_files = []
