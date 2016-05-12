@@ -52,7 +52,8 @@ To install *avr-gcc* use this [manual] (http://avr-eclipse.sourceforge.net/wiki/
 2. Support most of ruby operators: arithmetic, unary, comparison, binary, logical (operator 'not' is sometimes bug, use brackets)
 3. Support conditions if/unless (with return values) and it modify version
 4. Support loops while/until and it modify version (except redo/retry instruction)
-5. Realize example library for AVR AtTiny13 MCU with DigitalIO and ADC support
+5. Support external libraries
+6. Realize example library for AVR AtTiny13 MCU with DigitalIO and ADC support
 
 ### Example for AVR microcontroller:
 Ruby program (*"FirstController.rb"*):
@@ -119,7 +120,7 @@ ISR(ADC_vect)
 ```
 *note: this is a valid C-code, but in real AVR-controllers it may not work, because avr-libraries are still in development*
 
-### Some rake helpers
+### Rake generators
 For create new project RubimC gem support command "generate" (of just "g"). For example:
 ```sh
 rubimc generate mcu BrainControll type:attiny13 # create template "BrainControll.rb" for AVR microcontroller 'attiny13'
