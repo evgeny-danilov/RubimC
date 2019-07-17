@@ -8,7 +8,7 @@ RubimC designed to simplify the process of programming microcontrollers, but can
 + increase development speed
 + code readability and elegance inherent in the Ruby language
 + an object-oriented approach
-+ the use of an interpreted language does not reduce the performance of the final program because there is **no virtual mashine**
++ the use of an interpreted language does not reduce the performance of the final program because there is **no virtual machine**
 + ability of hardware control IC and delivery of messages
 + ability to get a list of the hardware for a particular version of the device, as well as a list of all methods and help them directly from the generator console, on the basis of libraries.
 
